@@ -1,6 +1,7 @@
 from playwright.sync_api import expect
 
 from pages.catalog_page import CatalogPage
+from pages.home_page import HomePage
 
 
 def test_logout_as_standart_user(page, login_as_standart_user, logout):
@@ -22,4 +23,6 @@ Cart state persisted (if applicable)"""
         for cookie in page.context.cookies()
     )
 
-    expect(page.get_by_label("Sign in")).to_be_visible()
+    home_page = HomePage(page)
+
+    expect(home_page.navbar.sign_in_button).to_be_visible()
