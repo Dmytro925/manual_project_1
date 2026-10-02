@@ -1,7 +1,7 @@
 from playwright.sync_api import expect
 from pages.catalog_page import CatalogPage
 
-def test_login_form_display(page, login_page):
+def test_login_form_display(login_page):
     """Description: Login page displays username and password input fields
     Acceptance Criteria:
     Username field with label "Username"
@@ -120,8 +120,6 @@ def test_locked_user_login(page, login_page, login_as_locked_user):
     Login fails
     Error message displayed: "Account is locked"
     User remains on login page"""
-
-    login_as_locked_user = login_as_locked_user
 
     # User remains on login page
     expect(page).to_have_url("https://qademo.com/login")

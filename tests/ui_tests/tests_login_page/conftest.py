@@ -12,7 +12,6 @@ def login_as_standart_user(page):
         email=STANDARD_USER["username"],
         password=STANDARD_USER["password"]
     )
-    return login_as_standart_user
 
 @pytest.fixture()
 def login_as_admin_user(page, login_page):
