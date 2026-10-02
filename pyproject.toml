@@ -1,0 +1,24 @@
+[project]
+name = "manual-project-1"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Dmytro925", email = "vilalobus365@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "playwright>=1.63.0",
+    "pytest>=9.1.1",
+    "pytest-playwright>=0.9.0",
+]
+
+[project.scripts]
+manual-project-1 = "manual_project_1:main"
+
+[build-system]
+requires = ["uv_build>=0.12.13,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
