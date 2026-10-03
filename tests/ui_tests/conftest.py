@@ -1,4 +1,5 @@
 import pytest
+import random
 
 from pages.login_page import LoginPage
 from pages.catalog_page import CatalogPage
@@ -20,3 +21,7 @@ def catalog_page(page):
 def logout(page):
     catalog_page = CatalogPage(page)
     catalog_page.navbar.logout()
+
+@pytest.fixture()
+def add_product_to_cart(catalog_page):
+    catalog_page.add_to_cart_button.click()

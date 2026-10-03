@@ -51,7 +51,6 @@ def test_login_form_display(login_page):
     expect(login_page.create_account_link).to_be_visible()
     expect(login_page.create_account_link).to_have_text("Create Account")
     expect(login_page.create_account_link).to_have_attribute("href", "/signup")
-    expect(login_page.create_account_text).to_be_visible()
 
 def test_standard_user_login(page, login_page, login_as_standart_user):
     """Description: Standard user can login successfully

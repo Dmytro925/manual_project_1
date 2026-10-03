@@ -11,6 +11,8 @@ class Navbar:
         self.logout_button = page.get_by_test_id("navbar-logout-button")
         self.sign_in_button = page.get_by_test_id("navbar-signin-link")
         self.sign_in_button = page.get_by_label("Sign in")
+        self.cart_link = page.get_by_test_id("navbar-cart-link")
+        self.cart_badge = page.get_by_test_id("navbar-cart-badge")
 
     def logout(self):
         self.logout_button.click()
