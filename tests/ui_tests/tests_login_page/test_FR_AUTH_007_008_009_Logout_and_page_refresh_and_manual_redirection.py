@@ -1,6 +1,5 @@
 from playwright.sync_api import expect
-from manual_project_1.pages.home_page import HomePage
-from manual_project_1.pages.login_page import LoginPage
+from pages.home_page import HomePage
 
 
 def test_standard_user_logout(page, standard_user_with_product_in_cart):

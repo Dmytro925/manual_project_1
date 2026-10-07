@@ -1,5 +1,5 @@
 from playwright.sync_api import Page
-from manual_project_1.pages.base_page import BasePage
+from pages.base_page import BasePage
 
 class CatalogPage(BasePage):
 

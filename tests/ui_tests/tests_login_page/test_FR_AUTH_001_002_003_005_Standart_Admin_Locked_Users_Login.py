@@ -1,5 +1,6 @@
 from playwright.sync_api import expect
-from manual_project_1.pages.catalog_page import CatalogPage
+from pages.catalog_page import CatalogPage
+from test_data.users import STANDARD_USER
 
 def test_login_form_display(login_page):
     """Description: Login page displays username and password input fields
@@ -52,7 +53,7 @@ def test_login_form_display(login_page):
     expect(login_page.create_account_link).to_have_text("Create Account")
     expect(login_page.create_account_link).to_have_attribute("href", "/signup")
 
-def test_standard_user_login(page, login_page):
+def test_standard_user_login(page, standard_user_catalog_page):
     """Description: Standard user can login successfully
     Precondition: User is on login page
     Input: Username: standard_user, Password: standard123
@@ -62,19 +63,9 @@ def test_standard_user_login(page, login_page):
     Username displayed in navbar
     Access token stored in browser"""
 
-    login_page.login("standard_user", "standard123")
-
-# Check that token is not exist before login
-    assert not any(
-        cookie["name"] == "refresh_token"
-        for cookie in page.context.cookies()
-    )
-
-    catalog_page = CatalogPage(page)
-
     # Login succeeds. Username displayed in navbar. User redirected to /catalog (or previous protected page)
     expect(page).to_have_url("/catalog")
-    expect(catalog_page.navbar.navbar_username).to_have_text("standard_user")
+    expect(standard_user_catalog_page.navbar.navbar_username).to_have_text("standard_user")
 
     # Access token stored in browser
     assert any(

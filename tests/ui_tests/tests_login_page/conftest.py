@@ -1,6 +1,6 @@
 import pytest
 
-from manual_project_1.pages.login_page import LoginPage
+from pages.login_page import LoginPage
 from test_data.users import LOCKED_USER
 from test_data.users import get_admin_user
 
