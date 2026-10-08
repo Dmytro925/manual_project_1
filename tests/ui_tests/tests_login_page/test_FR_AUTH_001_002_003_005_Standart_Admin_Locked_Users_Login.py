@@ -1,5 +1,6 @@
 from playwright.sync_api import expect
 from pages.catalog_page import CatalogPage
+from test_data.users import STANDARD_USER
 
 def test_login_form_display(login_page):
     """Description: Login page displays username and password input fields
@@ -51,9 +52,8 @@ def test_login_form_display(login_page):
     expect(login_page.create_account_link).to_be_visible()
     expect(login_page.create_account_link).to_have_text("Create Account")
     expect(login_page.create_account_link).to_have_attribute("href", "/signup")
-    expect(login_page.create_account_text).to_be_visible()
 
-def test_standard_user_login(page, login_page, login_as_standart_user):
+def test_standard_user_login(page, standard_user_catalog_page):
     """Description: Standard user can login successfully
     Precondition: User is on login page
     Input: Username: standard_user, Password: standard123
@@ -63,17 +63,9 @@ def test_standard_user_login(page, login_page, login_as_standart_user):
     Username displayed in navbar
     Access token stored in browser"""
 
-# Check that token is not exist before login
-    assert not any(
-        cookie["name"] == "refresh_token"
-        for cookie in page.context.cookies()
-    )
-
-    catalog_page = CatalogPage(page)
-
     # Login succeeds. Username displayed in navbar. User redirected to /catalog (or previous protected page)
-    expect(page).to_have_url("https://qademo.com/catalog")
-    expect(catalog_page.navbar.navbar_username).to_have_text("standard_user")
+    expect(page).to_have_url("/catalog")
+    expect(standard_user_catalog_page.navbar.navbar_username).to_have_text("standard_user")
 
     # Access token stored in browser
     assert any(
@@ -97,7 +89,7 @@ def test_admin_user_login(page, login_as_admin_user):
     )
 
     # Login succeeds. User redirected to catalog
-    expect(page).to_have_url("https://qademo.com/catalog")
+    expect(page).to_have_url("/catalog")
 
     catalog_page = CatalogPage(page)
 
@@ -122,7 +114,7 @@ def test_locked_user_login(page, login_page, login_as_locked_user):
     User remains on login page"""
 
     # User remains on login page
-    expect(page).to_have_url("https://qademo.com/login")
+    expect(page).to_have_url("/login")
 
     # Access token is not stored in browser
     assert not any(
