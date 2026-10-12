@@ -30,10 +30,24 @@ log_date_format = "%Y-%m-%d %H:%M:%S"
 log_format = "%(asctime)s [%(levelname)8s]: %(message)s (%(filename)s:%(lineno)s)"
 
 [tool.ruff.lint]
-extend-select = ["ANN"]
+extend-select = ["ANN", "D"]
+ignore = [
+    "D100",
+    "D104",
+    "D107",
+    "D202",  # conflicts with D205: don't enforce blank line after docstring
+    "D203",  # conflicts with D211
+    "D205",  # conflicts with D202
+    "D210",  # conflicts with D209
+    "D213",  # conflicts with D212
+    "D401",  # no imperative-mood enforcement
+    "D402",  # no imperative-mood enforcement
+    "D415",  # conflicts with D400
+]
 
 [tool.ruff.lint.per-file-ignores]
-"test_*.py" = ["ANN201"]
+# Test code: no missing-docstring enforcement
+"test_*.py" = ["ANN201", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107", "D209", "D400"]
 
 [dependency-groups]
 dev = [
