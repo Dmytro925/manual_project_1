@@ -32,6 +32,9 @@ log_format = "%(asctime)s [%(levelname)8s]: %(message)s (%(filename)s:%(lineno)s
 [tool.ruff.lint]
 extend-select = ["ANN"]
 
+[tool.ruff.lint.per-file-ignores]
+"test_*.py" = ["ANN201"]
+
 [dependency-groups]
 dev = [
     "ruff>=0.17.0",
