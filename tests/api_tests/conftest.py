@@ -1,30 +1,31 @@
 import pytest
 import requests
 from test_data.users import STANDARD_USER
-import logging
-
-@pytest.fixture(autouse=True)
-def log_api_response(monkeypatch):
-    logger = logging.getLogger(__name__)
-    original_request = requests.Session.request
-
-    def request(self, *args, **kwargs):
-        response = original_request(self, *args, **kwargs)
-
-        logger.info("Response body:\n%s", response.text)
-
-        return response
-
-    monkeypatch.setattr(requests.Session, "request", request)
+from src.api.base_client import ApiClient
+from src.api.products_client import ProductsClient
+from src.api.auth_client import AuthClient
 
 @pytest.fixture()
-def standard_user_login_api():
-    response = requests.post(
-        "https://qademo.com/api/auth/login",
-        json={
-            "username": STANDARD_USER["username"],
-            "password": STANDARD_USER["password"],
-        },
-    )
+def api_client():
+    client = ApiClient()
+    yield client
+    client.close()
 
-    return response
+@pytest.fixture()
+def products_client():
+    client = ProductsClient()
+    yield client
+    client.close()
+
+@pytest.fixture()
+def auth_client():
+    client = AuthClient()
+    yield client
+    client.close()
+
+@pytest.fixture
+def standard_user_login_api(auth_client):
+    return auth_client.login(
+        username=STANDARD_USER["username"],
+        password=STANDARD_USER["password"],
+    )

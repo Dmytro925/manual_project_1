@@ -16,6 +16,7 @@ dependencies = [
     "playwright>=1.63.0",
     "pytest>=9.1.1",
     "pytest-playwright>=0.9.0",
+    "requests>=2.34.2",
 ]
 
 [tool.pytest.ini_options]
@@ -23,3 +24,7 @@ pythonpath = ["."]
 base_url = "https://qademo.com"
 log_cli = true
 log_cli_level = "INFO"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+log_cli_format = "%(asctime)s [%(levelname)8s]: %(message)s (%(filename)s:%(lineno)s)"
+log_date_format = "%Y-%m-%d %H:%M:%S"
+log_format = "%(asctime)s [%(levelname)8s]: %(message)s (%(filename)s:%(lineno)s)"
