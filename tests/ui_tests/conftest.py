@@ -1,7 +1,6 @@
 import pytest
 from test_data.users import STANDARD_USER
-from src.pages.login_page import LoginPage
-from src.pages.catalog_page import CatalogPage
+from src.pages import LoginPage, CatalogPage
 
 
 @pytest.fixture()

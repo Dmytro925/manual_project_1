@@ -1,5 +1,3 @@
-import requests
-
 def test_standard_user_login_api(standard_user_login_api):
     """Getting an Access Token
     Endpoint: POST /api/auth/login

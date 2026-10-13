@@ -1,5 +1,5 @@
 from playwright.sync_api import expect
-from src.pages.catalog_page import CatalogPage
+from src.pages import CatalogPage
 
 def test_login_form_display(login_page):
     """Description: Login page displays username and password input fields

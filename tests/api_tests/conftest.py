@@ -1,9 +1,6 @@
 import pytest
-import requests
 from test_data.users import STANDARD_USER
-from src.api.base_client import ApiClient
-from src.api.products_client import ProductsClient
-from src.api.auth_client import AuthClient
+from src.api import ApiClient, ProductsClient, AuthClient
 
 @pytest.fixture()
 def api_client():
