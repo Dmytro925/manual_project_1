@@ -1,5 +1,5 @@
 from playwright.sync_api import Page
-from src.pages.shared_components import Navbar
+from src.pages.shared_components.nawbar import Navbar
 
 class BasePage(Page):
     def __init__(self, page: Page):

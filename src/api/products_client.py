@@ -1,4 +1,4 @@
-from src.api import ApiClient
+from src.api.base_client import ApiClient
 
 
 class ProductsClient(ApiClient):

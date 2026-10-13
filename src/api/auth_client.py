@@ -1,4 +1,5 @@
-from src.api import ApiClient, UserClient, UserSession
+from src.api.base_client import ApiClient
+from src.api.user_client import UserClient, UserSession
 
 class AuthError(Exception):
     pass

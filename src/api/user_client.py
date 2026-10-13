@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from src.api import ApiClient
+from src.api.base_client import ApiClient
 
 
 @dataclass(frozen=True)
