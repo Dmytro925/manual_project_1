@@ -1,6 +1,5 @@
 from datetime import datetime
 
-
 STANDARD_USER = {
     "username": "standard_user",
     "password": "standard123",

@@ -1,9 +1,12 @@
 from playwright.sync_api import Page
+
 from src.pages.base_page import BasePage
 
-class LoginPage(BasePage):
 
-    def __init__(self, page: Page):
+class LoginPage(BasePage):
+    """Page object for the login page."""
+
+    def __init__(self, page: Page) -> None:
         super().__init__(page)
 
         self.email_input = page.get_by_label("email")
@@ -16,19 +19,18 @@ class LoginPage(BasePage):
         self.login_error_message = page.get_by_test_id("login-error-message")
         self.create_account_text = page.get_by_text("Don't have an account?", exact=False)
 
-    def open(self):
-        """
-        Open login page
-        """
+    def open(self) -> None:
+        """Open the login page."""
+
         self.page.goto("https://qademo.com/login")
 
-    def login(self, email: str, password: str):
+    def login(self, email: str, password: str) -> None:
+        """Log in with email and password.
+
+        :param email: Valid username or email.
+        :param password: Valid password.
         """
-        Login with email and password
-        :param email: valid username or email
-        :param password: valid password
-        :return:
-        """
+
         self.email_input.fill(email)
         self.password_input.fill(password)
         self.login_button.click()

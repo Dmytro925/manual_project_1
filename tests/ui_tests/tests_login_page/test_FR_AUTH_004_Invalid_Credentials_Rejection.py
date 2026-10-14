@@ -1,5 +1,8 @@
 import pytest
-from playwright.sync_api import expect
+from playwright.sync_api import Page, expect
+
+from src.pages import LoginPage
+
 
 @pytest.mark.parametrize(
     "username, password",
@@ -10,7 +13,7 @@ from playwright.sync_api import expect
     ],
 )
 
-def test_invalid_credentials_rejection(page, username, password, login_page):
+def test_invalid_credentials_rejection(page: Page, username: str, password: str, login_page: LoginPage):
     """Description: Invalid credentials are rejected
     Precondition: User is on login page
     Input: Any invalid username/password combination
@@ -18,8 +21,6 @@ def test_invalid_credentials_rejection(page, username, password, login_page):
     Login fails
     Error message displayed: "Invalid username or password"
     User remains on login page"""
-
-    login_page = login_page
 
     login_page.login(username, password)
 

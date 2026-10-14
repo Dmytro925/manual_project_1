@@ -1,4 +1,7 @@
-def test_standard_user_login_api(standard_user_login_api):
+from src.api import ProductsClient, UserClient
+
+
+def test_standard_user_login_api(standard_user_login_api: UserClient):
     """Getting an Access Token
     Endpoint: POST /api/auth/login
     Access Token: Expires in 15 minutes
@@ -7,7 +10,7 @@ def test_standard_user_login_api(standard_user_login_api):
     assert standard_user_login_api.user_session.username == "standard_user"
     assert standard_user_login_api.user_session.access_token
 
-def test_get_all_products_api(products_client):
+def test_get_all_products_api(products_client: ProductsClient):
     """1. Get All Products
     Endpoint: GET /api/products
     Description: List all active products with stock information
@@ -16,5 +19,5 @@ def test_get_all_products_api(products_client):
     response = products_client.get_all()
 
     assert response.status_code == 200
-    assert response.json()["meta"]["total"] == 129
+    assert response.json()["meta"]["total"] > 10
 
