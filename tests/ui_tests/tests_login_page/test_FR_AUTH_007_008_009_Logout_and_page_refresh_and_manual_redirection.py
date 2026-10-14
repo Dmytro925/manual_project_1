@@ -1,17 +1,18 @@
-from playwright.sync_api import expect
-from src.pages import HomePage
+from playwright.sync_api import Page, expect
+
+from src.pages import CatalogPage, HomePage, LoginPage
 
 
-def test_standard_user_logout(page, standard_user_with_product_in_cart):
+def test_standard_user_logout(page: Page, standard_user_with_product_in_cart: CatalogPage) -> None:
     """FR-AUTH-007: Logout Functionality
-Description: Logged-in user can logout
-Precondition: User is authenticated
-Action: Click logout button (icon) in navbar
-Expected Result:
-User session cleared
-User redirected to home page
-"Sign In" button appears in navbar
-Cart state persisted (if applicable)"""
+    Description: Logged-in user can logout
+    Precondition: User is authenticated
+    Action: Click logout button (icon) in navbar
+    Expected Result:
+    User session cleared
+    User redirected to home page
+    "Sign In" button appears in navbar
+    Cart state persisted (if applicable)"""
 
     catalog_page = standard_user_with_product_in_cart
     catalog_page.navbar.logout_button.click()
@@ -22,7 +23,7 @@ Cart state persisted (if applicable)"""
     expect(home_page.navbar.sign_in_button).to_be_visible()
     expect(home_page.navbar.cart_badge).to_have_text("1")
 
-def test_standard_user_session_persistence(page, standard_user_catalog_page):
+def test_standard_user_session_persistence(page: Page, standard_user_catalog_page: CatalogPage) -> None:
     """FR-AUTH-008: Session Persistence
     Description: User session persists across page refresh
     Precondition: User is authenticated
@@ -37,7 +38,7 @@ def test_standard_user_session_persistence(page, standard_user_catalog_page):
     expect(standard_user_catalog_page.navbar.navbar_username).to_be_visible()
     expect(standard_user_catalog_page.navbar.navbar_username).to_have_text("standard_user")
 
-def test_standard_user_protected_route_redirect(page, login_page):
+def test_standard_user_protected_route_redirect(page: Page, login_page: LoginPage) -> None:
     """FR-AUTH-009: Protected Route Redirect
     Description: Unauthenticated users redirected to login for protected routes
     Precondition: User is not logged in

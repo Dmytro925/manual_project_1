@@ -1,7 +1,9 @@
-from playwright.sync_api import expect
-from src.pages import CatalogPage
+from playwright.sync_api import Page, expect
 
-def test_login_form_display(login_page):
+from src.pages import CatalogPage, LoginPage
+
+
+def test_login_form_display(login_page: LoginPage) -> None:
     """Description: Login page displays username and password input fields
     Acceptance Criteria:
     Username field with label "Username"
@@ -9,8 +11,6 @@ def test_login_form_display(login_page):
     "Sign In" button
     Test credentials helper section displayed below form
     "Back to Home" link at bottom"""
-
-    login_page = login_page
 
     # Username field with label "Username"
     expect(login_page.username_field).to_be_visible()
@@ -52,7 +52,7 @@ def test_login_form_display(login_page):
     expect(login_page.create_account_link).to_have_text("Create Account")
     expect(login_page.create_account_link).to_have_attribute("href", "/signup")
 
-def test_standard_user_login(page, standard_user_catalog_page):
+def test_standard_user_login(page: Page, standard_user_catalog_page: CatalogPage) -> None:
     """Description: Standard user can login successfully
     Precondition: User is on login page
     Input: Username: standard_user, Password: standard123
@@ -72,7 +72,7 @@ def test_standard_user_login(page, standard_user_catalog_page):
         for cookie in page.context.cookies()
     )
 
-def test_admin_user_login(page, login_as_admin_user):
+def test_admin_user_login(page: Page, login_as_admin_user: LoginPage) -> None:
     """Description: Admin user can login and access admin features
     Precondition: User is on login page
     Input: Username: admin_user, Password: $Admin<ddmmyyyy> (calculated based on current date DDMMYYYY)
@@ -103,7 +103,7 @@ def test_admin_user_login(page, login_as_admin_user):
         for cookie in page.context.cookies()
     )
 
-def test_locked_user_login(page, login_page, login_as_locked_user):
+def test_locked_user_login(page: Page, login_page: LoginPage, login_as_locked_user: LoginPage) -> None:
     """Description: Locked user cannot login
     Precondition: User is on login page
     Input: Username: locked_user, Password: locked123
