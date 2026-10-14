@@ -13,7 +13,7 @@ from src.pages import LoginPage
     ],
 )
 
-def test_invalid_credentials_rejection(page: Page, username: str, password: str, login_page: LoginPage) -> None:
+def test_invalid_credentials_rejection(page: Page, username: str, password: str, login_page: LoginPage):
     """Description: Invalid credentials are rejected
     Precondition: User is on login page
     Input: Any invalid username/password combination

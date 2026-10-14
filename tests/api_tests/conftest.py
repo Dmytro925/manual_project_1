@@ -2,10 +2,7 @@ from collections.abc import Generator
 
 import pytest
 
-from src.api.auth_client import AuthClient
-from src.api.base_client import ApiClient
-from src.api.products_client import ProductsClient
-from src.api.user_client import UserClient
+from src.api import ApiClient, AuthClient, ProductsClient, UserClient
 from test_data.users import STANDARD_USER
 
 

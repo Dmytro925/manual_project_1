@@ -1,8 +1,7 @@
-from src.api.products_client import ProductsClient
-from src.api.user_client import UserClient
+from src.api import ProductsClient, UserClient
 
 
-def test_standard_user_login_api(standard_user_login_api: UserClient) -> None:
+def test_standard_user_login_api(standard_user_login_api: UserClient):
     """Getting an Access Token
     Endpoint: POST /api/auth/login
     Access Token: Expires in 15 minutes
@@ -11,7 +10,7 @@ def test_standard_user_login_api(standard_user_login_api: UserClient) -> None:
     assert standard_user_login_api.user_session.username == "standard_user"
     assert standard_user_login_api.user_session.access_token
 
-def test_get_all_products_api(products_client: ProductsClient) -> None:
+def test_get_all_products_api(products_client: ProductsClient):
     """1. Get All Products
     Endpoint: GET /api/products
     Description: List all active products with stock information

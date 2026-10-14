@@ -3,7 +3,7 @@ from playwright.sync_api import Page, expect
 from src.pages import CatalogPage, LoginPage
 
 
-def test_login_form_display(login_page: LoginPage) -> None:
+def test_login_form_display(login_page: LoginPage):
     """Description: Login page displays username and password input fields
     Acceptance Criteria:
     Username field with label "Username"
@@ -52,7 +52,7 @@ def test_login_form_display(login_page: LoginPage) -> None:
     expect(login_page.create_account_link).to_have_text("Create Account")
     expect(login_page.create_account_link).to_have_attribute("href", "/signup")
 
-def test_standard_user_login(page: Page, standard_user_catalog_page: CatalogPage) -> None:
+def test_standard_user_login(page: Page, standard_user_catalog_page: CatalogPage):
     """Description: Standard user can login successfully
     Precondition: User is on login page
     Input: Username: standard_user, Password: standard123
@@ -72,7 +72,7 @@ def test_standard_user_login(page: Page, standard_user_catalog_page: CatalogPage
         for cookie in page.context.cookies()
     )
 
-def test_admin_user_login(page: Page, login_as_admin_user: LoginPage) -> None:
+def test_admin_user_login(page: Page, login_as_admin_user: LoginPage):
     """Description: Admin user can login and access admin features
     Precondition: User is on login page
     Input: Username: admin_user, Password: $Admin<ddmmyyyy> (calculated based on current date DDMMYYYY)
@@ -103,7 +103,7 @@ def test_admin_user_login(page: Page, login_as_admin_user: LoginPage) -> None:
         for cookie in page.context.cookies()
     )
 
-def test_locked_user_login(page: Page, login_page: LoginPage, login_as_locked_user: LoginPage) -> None:
+def test_locked_user_login(page: Page, login_page: LoginPage, login_as_locked_user: LoginPage):
     """Description: Locked user cannot login
     Precondition: User is on login page
     Input: Username: locked_user, Password: locked123
