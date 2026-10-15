@@ -2,8 +2,8 @@ from collections.abc import Generator
 
 import pytest
 
+from config.environments import get_standard_user
 from src.api import ApiClient, AuthClient, ProductsClient, UserClient
-from test_data.users import STANDARD_USER
 
 
 @pytest.fixture()
@@ -33,7 +33,8 @@ def auth_client() -> Generator[AuthClient]:
 @pytest.fixture
 def standard_user_login_api(auth_client: AuthClient) -> UserClient:
     """Authenticate as the standard user."""
+    user = get_standard_user()
     return auth_client.login(
-        username=STANDARD_USER["username"],
-        password=STANDARD_USER["password"],
+        username=user.username,
+        password=user.password,
     )

@@ -16,4 +16,4 @@ class CatalogPage(BasePage):
     def open(self) -> None:
         """Open the catalog page."""
 
-        self.page.goto("https://qademo.com/catalog")
+        self.page.goto("/catalog")

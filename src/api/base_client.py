@@ -1,14 +1,13 @@
 import logging
-import os
 from typing import Any
 
 import requests
 from requests import Response
 from requests.sessions import Session
 
-logger = logging.getLogger(__name__)
+from config.environments import get_api_base_url
 
-DEFAULT_BASE_URL = "https://qademo.com"
+logger = logging.getLogger(__name__)
 
 
 def _log_response(response: Response, **kwargs: object) -> None:
@@ -31,9 +30,7 @@ class ApiClient:
         session: Session | None = None,
         access_token: str | None = None,
     ) -> None:
-        self.base_url = (
-            base_url or os.getenv("API_BASE_URL", DEFAULT_BASE_URL)
-        ).rstrip("/")
+        self.base_url = (base_url or get_api_base_url()).rstrip("/")
         self.session = session if session is not None else requests.Session()
 
         if access_token:
