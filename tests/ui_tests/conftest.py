@@ -1,8 +1,8 @@
 import pytest
 from playwright.sync_api import Page
 
+from config.environments import get_standard_user
 from src.pages import CatalogPage, LoginPage
-from test_data.users import STANDARD_USER
 
 
 @pytest.fixture()
@@ -19,9 +19,10 @@ def standard_user_catalog_page(page: Page) -> CatalogPage:
 
     login_page = LoginPage(page)
     login_page.open()
+    user = get_standard_user()
     login_page.login(
-        email=STANDARD_USER["username"],
-        password=STANDARD_USER["password"]
+        email=user.username,
+        password=user.password,
     )
     login_page.navbar.navbar_username.wait_for(state="visible")
     return CatalogPage(page)

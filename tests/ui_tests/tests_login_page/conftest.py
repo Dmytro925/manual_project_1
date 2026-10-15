@@ -1,8 +1,8 @@
 import pytest
 from playwright.sync_api import Page
 
+from config.environments import get_admin_user, get_locked_user
 from src.pages import CatalogPage, LoginPage
-from test_data.users import LOCKED_USER, get_admin_user
 
 
 @pytest.fixture()
@@ -11,8 +11,8 @@ def login_as_admin_user(login_page: LoginPage) -> None:
 
     admin_user = get_admin_user()
     login_page.login(
-        email=admin_user["username"],
-        password=admin_user["password"]
+        email=admin_user.username,
+        password=admin_user.password,
     )
 
 @pytest.fixture()
@@ -21,9 +21,10 @@ def login_as_locked_user(page: Page) -> LoginPage:
 
     login_as_locked_user = LoginPage(page)
     login_as_locked_user.open()
+    locked_user = get_locked_user()
     login_as_locked_user.login(
-        email=LOCKED_USER["username"],
-        password=LOCKED_USER["password"]
+        email=locked_user.username,
+        password=locked_user.password,
     )
     return login_as_locked_user
 
