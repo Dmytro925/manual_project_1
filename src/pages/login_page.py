@@ -22,7 +22,7 @@ class LoginPage(BasePage):
     def open(self) -> None:
         """Open the login page."""
 
-        self.page.goto("https://qademo.com/login")
+        self.page.goto("/login")
 
     def login(self, email: str, password: str) -> None:
         """Log in with email and password.

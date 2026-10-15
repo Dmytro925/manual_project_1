@@ -28,4 +28,4 @@ def test_invalid_credentials_rejection(page: Page, username: str, password: str,
         "Invalid username or password"
     )
 
-    expect(page).to_have_url("https://qademo.com/login")
+    expect(page).to_have_url("/login")

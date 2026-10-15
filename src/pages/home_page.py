@@ -12,4 +12,4 @@ class HomePage(BasePage):
     def open(self) -> None:
         """Open the home page."""
 
-        self.page.goto("https://qademo.com/")
+        self.page.goto("/")
