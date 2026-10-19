@@ -1,8 +1,30 @@
-from pytest import Config
+import platform
+import sys
+from pathlib import Path
 
-from config.environments import get_base_url
+from pytest import Config, Session
+
+from config.environments import get_api_base_url, get_base_url
 
 
 def pytest_configure(config: Config) -> None:
     """Configure the application base URL for pytest."""
     config.option.base_url = get_base_url()
+
+
+def pytest_sessionfinish(session: Session, exitstatus: int) -> None:
+    """Save environment information for the Allure report."""
+    results_dir = Path("allure-results")
+    results_dir.mkdir(exist_ok=True)
+
+    environment = {
+        "Application URL": get_base_url(),
+        "API URL": get_api_base_url(),
+        "Python": sys.version.split()[0],
+        "OS": platform.platform(),
+    }
+
+    content = "\n".join(
+        f"{key}={value}" for key, value in environment.items()
+    )
+    (results_dir / "environment.properties").write_text(content)

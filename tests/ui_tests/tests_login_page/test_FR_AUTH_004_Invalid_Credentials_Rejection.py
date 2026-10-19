@@ -1,3 +1,4 @@
+import allure
 import pytest
 from playwright.sync_api import Page, expect
 
@@ -13,6 +14,12 @@ from src.pages import LoginPage
     ],
 )
 
+@allure.id("FR_AUTH_003")
+@allure.epic("Authentication Module")
+@allure.feature("Login Page (/login)")
+@allure.story("Invalid Credentials Rejection")
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Invalid credentials are rejected (as {username})")
 def test_invalid_credentials_rejection(page: Page, username: str, password: str, login_page: LoginPage):
     """Description: Invalid credentials are rejected
     Precondition: User is on login page
@@ -24,8 +31,10 @@ def test_invalid_credentials_rejection(page: Page, username: str, password: str,
 
     login_page.login(username, password)
 
-    expect(login_page.login_error_message).to_have_text(
-        "Invalid username or password"
-    )
+    with allure.step("Verify that 'Invalid username or password' message is displayed"):
+        expect(login_page.login_error_message).to_have_text(
+            "Invalid username or password"
+        )
 
-    expect(page).to_have_url("/login")
+    with allure.step("Verify that Login page is shown"):
+        expect(page).to_have_url("/login")
