@@ -1,9 +1,38 @@
+import re
+from collections.abc import Generator
+from pathlib import Path
+
+import allure
 import pytest
 from playwright.sync_api import Page
 
 from config.environments import get_standard_user
 from src.pages import CatalogPage, LoginPage
 
+SCREENSHOT_NAME_PATTERN = re.compile(r"^test-failed-\d+\.png$")
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_teardown(
+    item: pytest.Item,
+    nextitem: pytest.Item | None,
+) -> Generator[None, pytest.TestReport]:
+    """Attach failure screenshots to the Allure report."""
+    yield
+
+    artifacts_dir = getattr(item, "funcargs", {}).get("output_path")
+    if not artifacts_dir:
+        return
+    artifacts_path = Path(artifacts_dir)
+    if not artifacts_path.is_dir():
+        return
+    for file in artifacts_path.iterdir():
+        if file.is_file() and SCREENSHOT_NAME_PATTERN.match(file.name):
+            allure.attach.file(
+                str(file),
+                name=file.name,
+                attachment_type=allure.attachment_type.PNG,
+            )
 
 @pytest.fixture()
 def login_page(page: Page) -> LoginPage:
