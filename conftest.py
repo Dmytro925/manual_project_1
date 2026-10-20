@@ -19,7 +19,7 @@ def pytest_sessionfinish(session: Session, exitstatus: ExitCode) -> None:
     results_dir = Path("allure-results")
     results_dir.mkdir(exist_ok=True)
 
-    browser = getattr(session.config.option, "browser", [])
+    browser = session.config.getoption("browser", default=[]) or ["chromium"]
     if isinstance(browser, str):
         browser = [browser]
 
