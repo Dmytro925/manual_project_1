@@ -19,7 +19,7 @@ def test_standard_user_login_api(standard_user_login_api: UserClient):
         assert standard_user_login_api.user_session.username == "standard_user"
         assert standard_user_login_api.user_session.access_token
 
-@allure.id("Get All Products")
+@allure.id("FR-PROD-003")
 @allure.epic("Public endpoints API")
 @allure.feature("Get All Products")
 @allure.story("GET /api/products")
