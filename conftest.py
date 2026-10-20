@@ -16,17 +16,17 @@ def pytest_sessionfinish(session: Session, exitstatus: ExitCode) -> None:
     alluredir = getattr(session.config.option, "allure_report_dir", None)
     if not alluredir:
         return
-    results_dir = Path("allure-results")
-    results_dir.mkdir(exist_ok=True)
+    results_dir = Path(alluredir)
+    results_dir.mkdir(parents=True, exist_ok=True)
 
-    browser = session.config.getoption("browser", default=[]) or ["chromium"]
-    if isinstance(browser, str):
-        browser = [browser]
+    browser = getattr(session.config.option, "browser", None) or ["chromium"]
+    if isinstance(browser, (list, tuple)):
+        browser = ",".join(browser)
 
     environment = {
         "Application URL": get_base_url(),
         "API URL": get_api_base_url(),
-        "Browser": ", ".join(browser),
+        "Browser": browser,
         "Python": platform.python_version(),
         "OS": platform.platform(),
     }

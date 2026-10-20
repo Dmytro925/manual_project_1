@@ -12,11 +12,6 @@ from src.pages import CatalogPage, LoginPage
 SCREENSHOT_NAME_PATTERN = re.compile(r"^test-failed-\d+\.png$")
 
 
-import re
-
-SCREENSHOT_NAME_PATTERN = re.compile(r"^test-failed-\d+\.png$")
-
-
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_teardown(
     item: pytest.Item,
@@ -25,23 +20,19 @@ def pytest_runtest_teardown(
     """Attach failure screenshots to the Allure report."""
     yield
 
-    try:
-        output_path = getattr(item, "funcargs", {}).get("output_path")
-        if output_path:
-            artifacts_dir = Path(output_path)
-            if artifacts_dir.is_dir():
-                for file in artifacts_dir.iterdir():
-                    if (
-                        file.is_file()
-                        and SCREENSHOT_NAME_PATTERN.match(file.name)
-                    ):
-                        allure.attach.file(
-                            str(file),
-                            name=file.name,
-                            attachment_type=allure.attachment_type.PNG,
-                        )
-    except Exception as error:  # noqa: BLE001
-        print(f"Error attaching screenshot: {error}")
+    artifacts_dir = getattr(item, "funcargs", {}).get("output_path")
+    if not artifacts_dir:
+        return
+    artifacts_path = Path(artifacts_dir)
+    if not artifacts_path.is_dir():
+        return
+    for file in artifacts_path.iterdir():
+        if file.is_file() and SCREENSHOT_NAME_PATTERN.match(file.name):
+            allure.attach.file(
+                str(file),
+                name=file.name,
+                attachment_type=allure.attachment_type.PNG,
+            )
 
 @pytest.fixture()
 def login_page(page: Page) -> LoginPage:
