@@ -30,10 +30,10 @@ def test_get_all_products_api(products_client: ProductsClient):
     Endpoint: GET /api/products
     Description: List all active products with stock information
     Auth Required: No"""
-
-    response = products_client.get_all()
+    expected_status_code = 200
+    expected_product_number = 10
 
     with allure.step("Verify that GET /api/products endpoint returns all products"):
-        assert response.status_code == 200
-        assert response.json()["meta"]["total"] > 10
-
+        response = products_client.get_all()
+        assert response.status_code == expected_status_code
+        assert response.json()["meta"]["total"] > expected_product_number

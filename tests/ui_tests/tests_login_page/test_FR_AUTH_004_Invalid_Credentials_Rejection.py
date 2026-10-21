@@ -29,9 +29,8 @@ def test_invalid_credentials_rejection(page: Page, username: str, password: str,
     Error message displayed: "Invalid username or password"
     User remains on login page"""
 
-    login_page.login(username, password)
-
     with allure.step("Verify that 'Invalid username or password' message is displayed"):
+        login_page.login(username, password)
         expect(login_page.login_error_message).to_have_text(
             "Invalid username or password"
         )

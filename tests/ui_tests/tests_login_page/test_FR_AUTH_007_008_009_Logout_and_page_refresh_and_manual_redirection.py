@@ -20,15 +20,13 @@ def test_standard_user_logout(page: Page, standard_user_with_product_in_cart: Ca
     "Sign In" button appears in navbar
     Cart state persisted (if applicable)"""
 
-    catalog_page = standard_user_with_product_in_cart
-    catalog_page.navbar.logout_button.click()
-
     with allure.step("Verify that / page is shown if user logged out with product"):
+        catalog_page = standard_user_with_product_in_cart
+        catalog_page.navbar.logout_button.click()
         expect(page).to_have_url("/")
 
-    home_page = HomePage(page)
-
     with allure.step("Verify that cart_badge is NOT empty after logout"):
+        home_page = HomePage(page)
         expect(home_page.navbar.sign_in_button).to_be_visible()
         expect(home_page.navbar.cart_badge).to_have_text("1")
 
@@ -46,9 +44,8 @@ def test_standard_user_session_persistence(page: Page, standard_user_catalog_pag
     User remains logged in
     Username still displayed in navbar"""
 
-    page.reload()
-
     with allure.step("Verify that /catalog after page reload"):
+        page.reload()
         expect(page).to_have_url("/catalog")
 
     with allure.step("Verify that standard_user is shown in navbar after page reload"):
@@ -69,14 +66,12 @@ def test_standard_user_protected_route_redirect(page: Page, login_page: LoginPag
     User redirected to /login
     After login, user redirected to originally requested page"""
 
-    page.goto("/checkout")
-
     with allure.step("Verify that /login is shown after /checkout navigation"):
+        page.goto("/checkout")
         expect(page).to_have_url("/login")
 
-    page.goto("/orders")
-
     with allure.step("Verify that /login is shown after /orders navigation"):
+        page.goto("/orders")
         expect(page).to_have_url("/login")
 
 

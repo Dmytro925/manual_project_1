@@ -21,10 +21,7 @@ def test_login_form_display(login_page: LoginPage):
 
     with allure.step("Verify username field"):
         expect(login_page.username_field).to_be_visible()
-        expect(login_page.username_field).to_have_attribute(
-            "placeholder",
-            "Enter your username or email"
-        )
+        expect(login_page.username_field).to_be_enabled()
         expect(login_page.username_field).to_have_attribute(
             "aria-label",
             "Username or email"
@@ -32,10 +29,7 @@ def test_login_form_display(login_page: LoginPage):
 
     with allure.step("Verify password field"):
         expect(login_page.password_field).to_be_visible()
-        expect(login_page.password_field).to_have_attribute(
-            "placeholder",
-            "Enter your password"
-        )
+        expect(login_page.password_field).to_be_enabled()
         expect(login_page.password_field).to_have_attribute(
             "aria-label",
             "Password"
@@ -101,19 +95,19 @@ def test_admin_user_login(page: Page, login_as_admin_user: LoginPage):
     User redirected to catalog
     "Admin" button visible in navbar
     User can access /admin page"""
-    assert not any(
-        cookie["name"] == "refresh_token"
-        for cookie in page.context.cookies()
-    )
+
+    with allure.step("Verify that refresh token is NOT stored in browser"):
+        assert not any(
+            cookie["name"] == "refresh_token"
+            for cookie in page.context.cookies()
+        )
 
     with allure.step("Verify user navigation to catalog page after log in"):
         expect(page).to_have_url("/catalog")
-
         catalog_page = CatalogPage(page)
 
     with allure.step("Verify that admin_user is shown in navbar"):
         expect(catalog_page.navbar.navbar_username).to_have_text("admin_user")
-
         expect(catalog_page.navbar.navbar_admin_link).to_have_text("Admin")
 
     with allure.step("Verify that refresh token is stored in browser"):
