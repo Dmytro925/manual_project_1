@@ -37,7 +37,6 @@ def test_standard_user_login_api(auth_client: AuthClient):
 @pytest.mark.parametrize(
     "username, password, expected_status_code",
     [
-        (get_standard_user().username, get_standard_user().password, 200),
         ("standard_user", "wrong_password", 401),
         ("wrong_user", "standard123", 401),
         ("wrong_user", "wrong_password", 401),
@@ -57,7 +56,7 @@ def test_standard_user_login_api_parametrized(auth_client: AuthClient, username:
     Access Token: Expires in 15 minutes
     Refresh Token: Expires in 7 days"""
 
-    with allure.step("Verify valid and invalid credentials for standard_user"):
+    with allure.step("Verify invalid credentials for standard_user"):
         response = auth_client.post(
             path="/api/auth/login",
             json={
