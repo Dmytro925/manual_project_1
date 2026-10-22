@@ -51,10 +51,8 @@ def test_standard_user_login_api(auth_client: AuthClient):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Standard user login API")
 def test_standard_user_login_api_parametrized(auth_client: AuthClient, username: str, password: str, expected_status_code: str):
-    """Getting an Access Token
-    Endpoint: POST /api/auth/login
-    Access Token: Expires in 15 minutes
-    Refresh Token: Expires in 7 days"""
+    """Missing or invalid authentication
+    Endpoint: POST /api/auth/login"""
 
     with allure.step("Verify invalid credentials for standard_user"):
         response = auth_client.post(
