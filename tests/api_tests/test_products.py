@@ -1,6 +1,6 @@
 import allure
 
-from api import ProductsClient
+from src.api.products_client import ProductsClient
 
 
 @allure.id("FR-PROD-003")

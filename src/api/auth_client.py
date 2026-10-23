@@ -19,9 +19,7 @@ class AuthClient(ApiClient):
         )
 
         if response.status_code != 200:
-            raise AuthError(
-                f"Login failed: {response.status_code} {response.text}"
-            )
+            raise AuthError(f"Login failed: {response.status_code} {response.text}")
 
         data = response.json()["data"]
         user_session = UserSession(
