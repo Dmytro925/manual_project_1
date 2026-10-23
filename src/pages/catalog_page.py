@@ -9,8 +9,7 @@ class CatalogPage(BasePage):
     def __init__(self, page: Page) -> None:
         super().__init__(page)
         self.add_to_cart_button = page.get_by_role(
-            "button",
-            name="Add Laptop Backpack to cart"
+            "button", name="Add Laptop Backpack to cart"
         )
 
     def open(self) -> None:

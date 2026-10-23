@@ -24,8 +24,8 @@ def test_standard_user_login_api(auth_client: AuthClient):
             path="/api/auth/login",
             json={
                 "username": standard_user.username,
-                "password": standard_user.password
-                  },
+                "password": standard_user.password,
+            },
         )
 
         assert response.status_code == expected_status_code
@@ -43,24 +43,22 @@ def test_standard_user_login_api(auth_client: AuthClient):
         ("", "", 400),
     ],
 )
-
 @allure.id("FR_AUTH_002")
 @allure.epic("Authentication API")
 @allure.feature("Login Page (/login)")
 @allure.story("POST /api/auth/login")
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Standard user login API")
-def test_standard_user_login_api_parametrized(auth_client: AuthClient, username: str, password: str, expected_status_code: str):
+def test_login_with_invalid_credentials_api(
+    auth_client: AuthClient, username: str, password: str, expected_status_code: str
+):
     """Missing or invalid authentication
     Endpoint: POST /api/auth/login"""
 
     with allure.step("Verify invalid credentials for standard_user"):
         response = auth_client.post(
             path="/api/auth/login",
-            json={
-                "username": username,
-                "password": password
-                  },
+            json={"username": username, "password": password},
         )
 
         assert response.status_code == expected_status_code

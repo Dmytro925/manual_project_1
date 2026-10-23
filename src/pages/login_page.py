@@ -17,7 +17,9 @@ class LoginPage(BasePage):
         self.username_field = page.get_by_label("username")
         self.password_field = page.get_by_label("password")
         self.login_error_message = page.get_by_test_id("login-error-message")
-        self.create_account_text = page.get_by_text("Don't have an account?", exact=False)
+        self.create_account_text = page.get_by_text(
+            "Don't have an account?", exact=False
+        )
 
     def open(self) -> None:
         """Open the login page."""
