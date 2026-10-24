@@ -31,7 +31,5 @@ def pytest_sessionfinish(session: Session, exitstatus: ExitCode) -> None:
         "OS": platform.platform(),
     }
 
-    content = "\n".join(
-        f"{key}={value}" for key, value in environment.items()
-    )
+    content = "\n".join(f"{key}={value}" for key, value in environment.items())
     (results_dir / "environment.properties").write_text(content)

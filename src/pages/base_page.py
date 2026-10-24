@@ -9,4 +9,3 @@ class BasePage(Page):
     def __init__(self, page: Page) -> None:
         self.page = page
         self.navbar = Navbar(page)
-
