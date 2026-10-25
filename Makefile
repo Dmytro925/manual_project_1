@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-# ---------- Налаштування ----------
+# ---------- Configuration ----------
 
 PYTHON_RUN := uv run
 PYTEST := $(PYTHON_RUN) pytest
@@ -10,62 +10,53 @@ ALLURE_REPORT := allure-report
 
 TEST ?= tests/
 
-# ---------- Службові команди ----------
+# ---------- Utility Commands ----------
 
 .PHONY: help sync
-.PHONY: test test-auth test-api
+.PHONY: tests api-tests ui-tests
 .PHONY: ruff ty check
-.PHONY: allure clean
+.PHONY: test-allure clean
 
-help: ## Показати доступні команди
+help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*##' $(MAKEFILE_LIST) | \
 	awk 'BEGIN {FS = ":.*##"} {printf "  %-18s %s\n", $$1, $$2}'
 
-sync: ## Синхронізувати залежності з uv.lock
+sync: ## Sync dependencies with uv.lock
 	uv sync
 
 # ---------- Pytest ----------
 
-tests: ## Запустити тести або шлях із TEST
+tests: ## Run all tests or a specific path using TEST
 	$(PYTEST) $(TEST)
 
-api-tests: ## Запустити всі API-тести
+api-tests: ## Run all API tests
 	$(PYTEST) tests/api_tests/
 
-ui-tests: ## Запустити всі UI-тести
+ui-tests: ## Run all UI tests
 	$(PYTEST) tests/ui_tests/
 
 # ---------- Ruff ----------
 
-ruff: ## Виправити помилки та відформатувати код
+ruff: ## Fix lint issues and format code
 	$(PYTHON_RUN) ruff check . --fix
 	$(PYTHON_RUN) ruff format .
 
 # ---------- Ty ----------
 
-ty: ## Перевірити типи Python через ty
+ty: ## Check Python types with ty
 	$(PYTHON_RUN) ty check
 
-# ---------- Комплексна перевірка ----------
+# ---------- Code Checks ----------
 
-check: ruff ty ## Запустити Ruff і ty
+check: ruff ty ## Run Ruff and ty checks
 
 # ---------- Allure Report ----------
 
-test-allure: ## Запустити тести та відкрити Allure-звіт
-	@set +e; \
-	$(PYTEST) $(TEST); \
-	test_status=$$?; \
-	allure generate $(ALLURE_RESULTS) --clean -o $(ALLURE_REPORT); \
-	report_status=$$?; \
-	if [ $$report_status -eq 0 ]; then \
-		allure open $(ALLURE_REPORT); \
-	else \
-		exit $$report_status; \
-	fi; \
-	exit $$test_status
+allure: ## Generate and open the Allure report
+	allure generate $(ALLURE_RESULTS) --clean -o $(ALLURE_REPORT)
+	allure open $(ALLURE_REPORT)
 
-# ---------- Очищення ----------
+# ---------- Cleanup ----------
 
-clean: ## Видалити результати тестів і Allure-звіт
+clean: ## Remove test results and the Allure report
 	rm -rf $(ALLURE_RESULTS) $(ALLURE_REPORT)
