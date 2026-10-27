@@ -83,7 +83,7 @@ def test_standard_user_login(page: Page, standard_user_catalog_page: CatalogPage
 @allure.story("Admin User Login")
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Admin user can login and access admin features")
-def test_admin_user_login(page: Page, login_as_admin_user: LoginPage):
+def test_admin_user_login(page: Page, login_as_admin_user: CatalogPage):
     """Description: Admin user can login and access admin features
     Precondition: User is on login page
     Input: Username: admin_user, Password: $Admin<ddmmyyyy> (calculated based on current date DDMMYYYY)
@@ -93,18 +93,13 @@ def test_admin_user_login(page: Page, login_as_admin_user: LoginPage):
     "Admin" button visible in navbar
     User can access /admin page"""
 
-    with allure.step("Verify that refresh token is NOT stored in browser"):
-        assert not any(
-            cookie["name"] == "refresh_token" for cookie in page.context.cookies()
-        )
-
     with allure.step("Verify user navigation to catalog page after log in"):
         expect(page).to_have_url("/catalog")
-        catalog_page = CatalogPage(page)
+        login_as_admin_user: CatalogPage
 
     with allure.step("Verify that admin_user is shown in navbar"):
-        expect(catalog_page.navbar.navbar_username).to_have_text("admin_user")
-        expect(catalog_page.navbar.navbar_admin_link).to_have_text("Admin")
+        expect(login_as_admin_user.navbar.navbar_username).to_have_text("admin_user")
+        expect(login_as_admin_user.navbar.navbar_admin_link).to_have_text("Admin")
 
     with allure.step("Verify that refresh token is stored in browser"):
         assert any(
@@ -118,9 +113,7 @@ def test_admin_user_login(page: Page, login_as_admin_user: LoginPage):
 @allure.story("Locked User Login Rejection")
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Locked user cannot login")
-def test_locked_user_cannot_login(
-    page: Page, login_page: LoginPage, login_as_locked_user: LoginPage
-):
+def test_locked_user_cannot_login(page: Page, login_as_locked_user: LoginPage):
     """Description: Locked user cannot login
     Precondition: User is on login page
     Input: Username: locked_user, Password: locked123
@@ -138,7 +131,9 @@ def test_locked_user_cannot_login(
         )
 
     with allure.step("Verify that account is locked"):
-        expect(login_page.login_error_message).to_have_text("Account is locked")
+        expect(login_as_locked_user.login_error_message).to_have_text(
+            "Account is locked"
+        )
 
 
 @pytest.mark.parametrize(
