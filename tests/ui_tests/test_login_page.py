@@ -5,7 +5,7 @@ from playwright.sync_api import Page, expect
 from src.pages import CatalogPage, HomePage, LoginPage
 
 
-@allure.id("FR_AUTH_001")
+@allure.id("FR-AUTH-001")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Login form display")
@@ -47,7 +47,7 @@ def test_login_form_display(login_page: LoginPage):
         expect(login_page.create_account_link).to_have_attribute("href", "/signup")
 
 
-@allure.id("FR_AUTH_002")
+@allure.id("FR-AUTH-002")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Standard User Login")
@@ -77,7 +77,7 @@ def test_standard_user_login(page: Page, standard_user_catalog_page: CatalogPage
         )
 
 
-@allure.id("FR_AUTH_005")
+@allure.id("FR-AUTH-005")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Admin User Login")
@@ -107,7 +107,7 @@ def test_admin_user_login(page: Page, login_as_admin_user: CatalogPage):
         )
 
 
-@allure.id("FR_AUTH_003")
+@allure.id("FR-AUTH-003")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Locked User Login Rejection")
@@ -144,7 +144,7 @@ def test_locked_user_cannot_login(page: Page, login_as_locked_user: LoginPage):
         ("admin", "standard123"),
     ],
 )
-@allure.id("FR_AUTH_003")
+@allure.id("FR-AUTH-004")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Invalid Credentials Rejection")
@@ -171,7 +171,7 @@ def test_invalid_credentials_rejection(
         expect(page).to_have_url("/login")
 
 
-@allure.id("FR_AUTH_007")
+@allure.id("FR-AUTH-007")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Logout Functionality")
@@ -200,7 +200,7 @@ def test_standard_user_logout(
         expect(home_page.navbar.cart_badge).to_have_text("1")
 
 
-@allure.id("FR_AUTH_008")
+@allure.id("FR-AUTH-008")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Session Persistence")
@@ -227,7 +227,7 @@ def test_standard_user_session_persistence(
         )
 
 
-@allure.id("FR_AUTH_009")
+@allure.id("FR-AUTH-009")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Protected Route Redirect")

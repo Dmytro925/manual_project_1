@@ -5,7 +5,7 @@ from config.environments import get_standard_user
 from src.api import AuthClient
 
 
-@allure.id("FR_AUTH_002")
+@allure.id("FR-AUTH-002")
 @allure.epic("Authentication API")
 @allure.feature("Login Page (/login)")
 @allure.story("POST /api/auth/login")
@@ -43,7 +43,7 @@ def test_standard_user_login_api(auth_client: AuthClient):
         ("", "", 400),
     ],
 )
-@allure.id("FR_AUTH_002")
+@allure.id("FR-AUTH-004")
 @allure.epic("Authentication API")
 @allure.feature("Login Page (/login)")
 @allure.story("POST /api/auth/login")
