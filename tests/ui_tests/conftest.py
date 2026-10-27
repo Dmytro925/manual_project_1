@@ -90,5 +90,5 @@ def standard_user_with_product_in_cart(
 ) -> CatalogPage:
     """Add a product to the cart for the standard user."""
 
-    standard_user_catalog_page.add_to_cart_button.click()
+    standard_user_catalog_page.add_to_cart("Laptop Backpack")
     return standard_user_catalog_page

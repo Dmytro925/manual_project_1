@@ -8,9 +8,10 @@ class CatalogPage(BasePage):
 
     def __init__(self, page: Page) -> None:
         super().__init__(page)
-        self.add_to_cart_button = page.get_by_role(
-            "button", name="Add Laptop Backpack to cart"
-        )
+
+    def add_to_cart(self, product_name: str) -> None:
+        """Add a product to the cart."""
+        self.page.get_by_role("button", name=f"Add {product_name} to cart").click()
 
     def open(self) -> None:
         """Open the catalog page."""
