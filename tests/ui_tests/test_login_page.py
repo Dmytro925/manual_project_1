@@ -57,7 +57,7 @@ def test_login_form_display(login_page: LoginPage):
 def test_standard_user_login(page: Page, standard_user_catalog_page: CatalogPage):
     """Description: Standard user can login successfully
     Precondition: User is on login page
-    Input: Username: standard_user, Password: standard123
+    Input: Username: XXXXXX, Password: XXXXXX
     Expected Result:
     Login succeeds
     User redirected to /catalog (or previous protected page)
@@ -87,7 +87,7 @@ def test_standard_user_login(page: Page, standard_user_catalog_page: CatalogPage
 def test_admin_user_login(page: Page, login_as_admin_user: CatalogPage):
     """Description: Admin user can login and access admin features
     Precondition: User is on login page
-    Input: Username: admin_user, Password: $Admin<ddmmyyyy> (calculated based on current date DDMMYYYY)
+    Input: Username: XXXXXX, Password: XXXXXX
     Expected Result:
     Login succeeds
     User redirected to catalog
@@ -96,7 +96,6 @@ def test_admin_user_login(page: Page, login_as_admin_user: CatalogPage):
 
     with allure.step("Verify user navigation to catalog page after log in"):
         expect(page).to_have_url("/catalog")
-        login_as_admin_user: CatalogPage
 
     with allure.step("Verify that admin_user is shown in navbar"):
         expect(login_as_admin_user.navbar.navbar_username).to_have_text("admin_user")
@@ -117,7 +116,7 @@ def test_admin_user_login(page: Page, login_as_admin_user: CatalogPage):
 def test_locked_user_cannot_login(page: Page, login_as_locked_user: LoginPage):
     """Description: Locked user cannot login
     Precondition: User is on login page
-    Input: Username: locked_user, Password: locked123
+    Input: Username: XXXXXX, Password: XXXXXX
     Expected Result:
     Login fails
     Error message displayed: "Account is locked"

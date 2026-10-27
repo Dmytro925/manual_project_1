@@ -63,5 +63,5 @@ clean: ## Remove test results and the Allure report
 
 # ---------- Codegen ----------
 
-codegen: ## Remove test results and the Allure report
+codegen: ## Run Codegen browser
 	uv run playwright codegen --target python-pytest https://qademo.com/

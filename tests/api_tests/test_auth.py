@@ -51,7 +51,7 @@ def test_standard_user_login_api(auth_client: AuthClient):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Standard user login API")
 def test_login_with_invalid_credentials_api(
-    auth_client: AuthClient, username: str, password: str, expected_status_code: str
+    auth_client: AuthClient, username: str, password: str, expected_status_code: int
 ):
     """Missing or invalid authentication
     Endpoint: POST /api/auth/login"""
