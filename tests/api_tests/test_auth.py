@@ -37,11 +37,12 @@ def test_standard_user_login_api(auth_client: AuthClient):
 @pytest.mark.parametrize(
     "username, password, expected_status_code",
     [
-        ("standard_user", "wrong_password", 401),
-        ("wrong_user", "standard123", 401),
+        (get_standard_user().username, "wrong_password", 401),
+        ("wrong_user", get_standard_user().password, 401),
         ("wrong_user", "wrong_password", 401),
         ("", "", 400),
     ],
+    ids=["wrong-password", "wrong-user", "both-wrong", "empty-credentials"],
 )
 @allure.id("FR-AUTH-004")
 @allure.epic("Authentication API")

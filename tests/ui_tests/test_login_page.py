@@ -2,6 +2,7 @@ import allure
 import pytest
 from playwright.sync_api import Page, expect
 
+from config.environments import get_standard_user
 from src.pages import CatalogPage, HomePage, LoginPage
 
 
@@ -140,9 +141,10 @@ def test_locked_user_cannot_login(page: Page, login_as_locked_user: LoginPage):
     "username, password",
     [
         ("invalid_user", "invalid_password"),
-        ("standard_user", "wrong_password"),
-        ("admin", "standard123"),
+        (get_standard_user().username, "wrong_password"),
+        ("admin", get_standard_user().password),
     ],
+    ids=["both-wrong", "wrong-password", "wrong-user"],
 )
 @allure.id("FR-AUTH-004")
 @allure.epic("Authentication Module")
