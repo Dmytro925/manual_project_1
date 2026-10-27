@@ -19,6 +19,8 @@ __pycache__/
 
 # Zed
 .zed/
+
+# Environment
 .env
 
 # Allure-report

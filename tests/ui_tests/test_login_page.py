@@ -2,10 +2,11 @@ import allure
 import pytest
 from playwright.sync_api import Page, expect
 
+from config.environments import get_standard_user
 from src.pages import CatalogPage, HomePage, LoginPage
 
 
-@allure.id("FR_AUTH_001")
+@allure.id("FR-AUTH-001")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Login form display")
@@ -47,7 +48,7 @@ def test_login_form_display(login_page: LoginPage):
         expect(login_page.create_account_link).to_have_attribute("href", "/signup")
 
 
-@allure.id("FR_AUTH_002")
+@allure.id("FR-AUTH-002")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Standard User Login")
@@ -56,7 +57,7 @@ def test_login_form_display(login_page: LoginPage):
 def test_standard_user_login(page: Page, standard_user_catalog_page: CatalogPage):
     """Description: Standard user can login successfully
     Precondition: User is on login page
-    Input: Username: standard_user, Password: standard123
+    Input: Username: XXXXXX, Password: XXXXXX
     Expected Result:
     Login succeeds
     User redirected to /catalog (or previous protected page)
@@ -77,34 +78,28 @@ def test_standard_user_login(page: Page, standard_user_catalog_page: CatalogPage
         )
 
 
-@allure.id("FR_AUTH_005")
+@allure.id("FR-AUTH-005")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Admin User Login")
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Admin user can login and access admin features")
-def test_admin_user_login(page: Page, login_as_admin_user: LoginPage):
+def test_admin_user_login(page: Page, login_as_admin_user: CatalogPage):
     """Description: Admin user can login and access admin features
     Precondition: User is on login page
-    Input: Username: admin_user, Password: $Admin<ddmmyyyy> (calculated based on current date DDMMYYYY)
+    Input: Username: XXXXXX, Password: XXXXXX
     Expected Result:
     Login succeeds
     User redirected to catalog
     "Admin" button visible in navbar
     User can access /admin page"""
 
-    with allure.step("Verify that refresh token is NOT stored in browser"):
-        assert not any(
-            cookie["name"] == "refresh_token" for cookie in page.context.cookies()
-        )
-
     with allure.step("Verify user navigation to catalog page after log in"):
         expect(page).to_have_url("/catalog")
-        catalog_page = CatalogPage(page)
 
     with allure.step("Verify that admin_user is shown in navbar"):
-        expect(catalog_page.navbar.navbar_username).to_have_text("admin_user")
-        expect(catalog_page.navbar.navbar_admin_link).to_have_text("Admin")
+        expect(login_as_admin_user.navbar.navbar_username).to_have_text("admin_user")
+        expect(login_as_admin_user.navbar.navbar_admin_link).to_have_text("Admin")
 
     with allure.step("Verify that refresh token is stored in browser"):
         assert any(
@@ -112,18 +107,16 @@ def test_admin_user_login(page: Page, login_as_admin_user: LoginPage):
         )
 
 
-@allure.id("FR_AUTH_003")
+@allure.id("FR-AUTH-003")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Locked User Login Rejection")
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Locked user cannot login")
-def test_locked_user_cannot_login(
-    page: Page, login_page: LoginPage, login_as_locked_user: LoginPage
-):
+def test_locked_user_cannot_login(page: Page, login_as_locked_user: LoginPage):
     """Description: Locked user cannot login
     Precondition: User is on login page
-    Input: Username: locked_user, Password: locked123
+    Input: Username: XXXXXX, Password: XXXXXX
     Expected Result:
     Login fails
     Error message displayed: "Account is locked"
@@ -138,18 +131,21 @@ def test_locked_user_cannot_login(
         )
 
     with allure.step("Verify that account is locked"):
-        expect(login_page.login_error_message).to_have_text("Account is locked")
+        expect(login_as_locked_user.login_error_message).to_have_text(
+            "Account is locked"
+        )
 
 
 @pytest.mark.parametrize(
     "username, password",
     [
         ("invalid_user", "invalid_password"),
-        ("standard_user", "wrong_password"),
-        ("admin", "standard123"),
+        (get_standard_user().username, "wrong_password"),
+        ("admin", get_standard_user().password),
     ],
+    ids=["both-wrong", "wrong-password", "wrong-user"],
 )
-@allure.id("FR_AUTH_003")
+@allure.id("FR-AUTH-004")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Invalid Credentials Rejection")
@@ -176,7 +172,7 @@ def test_invalid_credentials_rejection(
         expect(page).to_have_url("/login")
 
 
-@allure.id("FR_AUTH_007")
+@allure.id("FR-AUTH-007")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Logout Functionality")
@@ -201,11 +197,11 @@ def test_standard_user_logout(
 
     with allure.step("Verify that cart_badge is NOT empty after logout"):
         home_page = HomePage(page)
-        expect(home_page.navbar.sign_in_button).to_be_visible()
+        expect(home_page.navbar.sign_in_link).to_be_visible()
         expect(home_page.navbar.cart_badge).to_have_text("1")
 
 
-@allure.id("FR_AUTH_008")
+@allure.id("FR-AUTH-008")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Session Persistence")
@@ -232,7 +228,7 @@ def test_standard_user_session_persistence(
         )
 
 
-@allure.id("FR_AUTH_009")
+@allure.id("FR-AUTH-009")
 @allure.epic("Authentication Module")
 @allure.feature("Login Page (/login)")
 @allure.story("Protected Route Redirect")

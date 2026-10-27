@@ -1,5 +1,3 @@
-from requests import Response
-
 from src.api.base_client import ApiClient
 from src.api.user_client import UserClient, UserSession
 
@@ -13,7 +11,7 @@ class AuthClient(ApiClient):
 
     def login(self, username: str, password: str) -> UserClient:
         """Authenticate a user and return an authenticated API client."""
-        response: Response = self.post(
+        response = self.post(
             "/api/auth/login",
             json={"username": username, "password": password},
         )

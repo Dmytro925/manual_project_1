@@ -5,7 +5,7 @@ from config.environments import get_standard_user
 from src.api import AuthClient
 
 
-@allure.id("FR_AUTH_002")
+@allure.id("FR-AUTH-002")
 @allure.epic("Authentication API")
 @allure.feature("Login Page (/login)")
 @allure.story("POST /api/auth/login")
@@ -37,20 +37,21 @@ def test_standard_user_login_api(auth_client: AuthClient):
 @pytest.mark.parametrize(
     "username, password, expected_status_code",
     [
-        ("standard_user", "wrong_password", 401),
-        ("wrong_user", "standard123", 401),
+        (get_standard_user().username, "wrong_password", 401),
+        ("wrong_user", get_standard_user().password, 401),
         ("wrong_user", "wrong_password", 401),
         ("", "", 400),
     ],
+    ids=["wrong-password", "wrong-user", "both-wrong", "empty-credentials"],
 )
-@allure.id("FR_AUTH_002")
+@allure.id("FR-AUTH-004")
 @allure.epic("Authentication API")
 @allure.feature("Login Page (/login)")
 @allure.story("POST /api/auth/login")
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Standard user login API")
 def test_login_with_invalid_credentials_api(
-    auth_client: AuthClient, username: str, password: str, expected_status_code: str
+    auth_client: AuthClient, username: str, password: str, expected_status_code: int
 ):
     """Missing or invalid authentication
     Endpoint: POST /api/auth/login"""

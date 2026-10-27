@@ -11,8 +11,7 @@ class Navbar:
         self.navbar_username = page.get_by_test_id("navbar-username")
         self.navbar_admin_link = page.get_by_test_id("navbar-admin-link")
         self.logout_button = page.get_by_test_id("navbar-logout-button")
-        self.sign_in_button = page.get_by_test_id("navbar-signin-link")
-        self.sign_in_button = page.get_by_label("Sign in")
+        self.sign_in_link = page.get_by_test_id("navbar-signin-link")
         self.cart_link = page.get_by_test_id("navbar-cart-link")
         self.cart_badge = page.get_by_test_id("navbar-cart-badge")
 

@@ -45,43 +45,29 @@ def login_page(page: Page) -> LoginPage:
 
 
 @pytest.fixture()
-def standard_user_catalog_page(page: Page) -> CatalogPage:
+def standard_user_catalog_page(page: Page, login_page: LoginPage) -> CatalogPage:
     """Log in as a standard user and provide the catalog page."""
-
-    login_page = LoginPage(page)
-    login_page.open()
     user = get_standard_user()
-    login_page.login(
-        email=user.username,
-        password=user.password,
-    )
+    login_page.login(email=user.username, password=user.password)
     login_page.navbar.navbar_username.wait_for(state="visible")
     return CatalogPage(page)
 
 
 @pytest.fixture()
-def login_as_admin_user(login_page: LoginPage) -> None:
-    """Log in as an admin user."""
-
+def login_as_admin_user(page: Page, login_page: LoginPage) -> CatalogPage:
+    """Log in as the admin user and provide the catalog page."""
     admin_user = get_admin_user()
-    login_page.login(
-        email=admin_user.username,
-        password=admin_user.password,
-    )
+    login_page.login(email=admin_user.username, password=admin_user.password)
+    login_page.navbar.navbar_username.wait_for(state="visible")
+    return CatalogPage(page)
 
 
 @pytest.fixture()
-def login_as_locked_user(page: Page) -> LoginPage:
-    """Open the login page for a locked user."""
-
-    login_as_locked_user = LoginPage(page)
-    login_as_locked_user.open()
+def login_as_locked_user(login_page: LoginPage) -> LoginPage:
+    """Attempt a login with the locked user's credentials."""
     locked_user = get_locked_user()
-    login_as_locked_user.login(
-        email=locked_user.username,
-        password=locked_user.password,
-    )
-    return login_as_locked_user
+    login_page.login(email=locked_user.username, password=locked_user.password)
+    return login_page
 
 
 @pytest.fixture()
@@ -90,5 +76,5 @@ def standard_user_with_product_in_cart(
 ) -> CatalogPage:
     """Add a product to the cart for the standard user."""
 
-    standard_user_catalog_page.add_to_cart_button.click()
+    standard_user_catalog_page.add_to_cart("Laptop Backpack")
     return standard_user_catalog_page

@@ -60,3 +60,8 @@ allure: ## Generate and open the Allure report
 
 clean: ## Remove test results and the Allure report
 	rm -rf $(ALLURE_RESULTS) $(ALLURE_REPORT)
+
+# ---------- Codegen ----------
+
+codegen: ## Run Codegen browser
+	uv run playwright codegen --target python-pytest https://qademo.com/
