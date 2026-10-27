@@ -201,7 +201,7 @@ def test_standard_user_logout(
 
     with allure.step("Verify that cart_badge is NOT empty after logout"):
         home_page = HomePage(page)
-        expect(home_page.navbar.sign_in_button).to_be_visible()
+        expect(home_page.navbar.sign_in_link).to_be_visible()
         expect(home_page.navbar.cart_badge).to_have_text("1")
 
 
