@@ -8,6 +8,8 @@ from typing import Literal
 class UserCredentials:
     """Store credentials and the user's account type."""
 
+
+
     username: str
     password: str
     type: Literal["standard", "locked", "admin"]
