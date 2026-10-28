@@ -7,7 +7,8 @@ on:
       - main
 
 jobs:
-  "ruff + ty":
+  checks:
+    name: ruff + ty
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
