@@ -6,7 +6,8 @@ from typing import Literal
 
 @dataclass(frozen=True)
 class UserCredentials:
-    """Store credentials and the user's account type."""
+
+
 
     username: str
     password: str
