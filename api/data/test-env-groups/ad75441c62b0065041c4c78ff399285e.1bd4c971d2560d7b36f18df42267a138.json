@@ -1,1 +1,1 @@
-{"id":"ad75441c62b0065041c4c78ff399285e.1bd4c971d2560d7b36f18df42267a138","fullName":"tests.api_tests.test_auth#test_login_with_invalid_credentials_api","name":"Standard user login API","status":"passed","testResultsByEnv":{"default":"13f2dacd37cf8888fc2922b9a2f2c990"}}
+{"id":"ad75441c62b0065041c4c78ff399285e.1bd4c971d2560d7b36f18df42267a138","fullName":"tests.api_tests.test_auth#test_login_with_invalid_credentials_api","name":"Standard user login API","status":"passed","testResultsByEnv":{"default":"745553ad827ae7747ce7e7f08e87ae72"}}

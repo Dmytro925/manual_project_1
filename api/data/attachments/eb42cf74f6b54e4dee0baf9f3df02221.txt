@@ -1,3 +1,0 @@
-2026-11-02 21:37:38 [    INFO]: POST https://qademo.com/api/auth/login -> 400 (base_client.py:15)
-2026-11-02 21:37:38 [    INFO]: Response body:
-{"success":false,"error":{"issues":[{"code":"too_small","minimum":1,"type":"string","inclusive":true,"exact":false,"message":"Username or email is required","path":["username"]},{"code":"too_small","minimum":1,"type":"string","inclusive":true,"exact":false,"message":"Password is required","path":["password"]}],"name":"ZodError"}} (base_client.py:21)
