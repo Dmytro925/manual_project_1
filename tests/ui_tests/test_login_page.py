@@ -123,7 +123,7 @@ def test_locked_user_cannot_login(page: Page, login_as_locked_user: LoginPage):
     User remains on login page"""
 
     with allure.step("Verify that user is on login page"):
-        expect(page).to_have_url("/login")
+        expect(page).to_have_url("/loginn")
 
     with allure.step("Verify that refresh token is NOT stored in browser"):
         assert not any(
