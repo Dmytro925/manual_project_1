@@ -1,0 +1,93 @@
+name: Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: "Test suite to run"
+        type: choice
+        options:
+          - all
+          - api
+          - ui
+        default: all
+      browser:
+        description: "Browser for UI tests"
+        type: choice
+        options:
+          - chromium
+          - firefox
+          - webkit
+        default: chromium
+
+env:
+  BASE_URL: ${{ secrets.BASE_URL }}
+  API_BASE_URL: ${{ secrets.API_BASE_URL }}
+  STANDARD_USER_USERNAME: ${{ secrets.STANDARD_USER_USERNAME }}
+  STANDARD_USER_PASSWORD: ${{ secrets.STANDARD_USER_PASSWORD }}
+  LOCKED_USER_USERNAME: ${{ secrets.LOCKED_USER_USERNAME }}
+  LOCKED_USER_PASSWORD: ${{ secrets.LOCKED_USER_PASSWORD }}
+  ADMIN_USER_USERNAME: ${{ secrets.ADMIN_USER_USERNAME }}
+  ADMIN_USER_PASSWORD_TEMPLATE: ${{ secrets.ADMIN_USER_PASSWORD_TEMPLATE }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: ${{ inputs.suite == 'all' || inputs.suite == 'api' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Run API tests
+        run: uv run pytest tests/api_tests/
+
+      - name: Upload API Allure results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: allure-results-api
+          path: allure-results/
+          if-no-files-found: ignore
+
+  ui-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: ${{ inputs.suite == 'all' || inputs.suite == 'ui' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Install Playwright browsers
+        run: uv run playwright install --with-deps ${{ inputs.browser }}
+
+      - name: Run UI tests
+        run: uv run pytest tests/ui_tests/ --browser ${{ inputs.browser }}
+
+      - name: Upload UI Allure results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: allure-results-ui
+          path: allure-results/
+          if-no-files-found: ignore
