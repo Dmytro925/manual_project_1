@@ -59,7 +59,7 @@ def test_login_with_invalid_credentials_api(
     with allure.step("Verify invalid credentials for standard_user"):
         response = auth_client.post(
             path="/api/auth/login",
-            json={"username": usernamee, "password": password},
+            json={"username": username, "password": password},
         )
 
         assert response.status_code == expected_status_code
