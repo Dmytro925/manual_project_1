@@ -91,3 +91,75 @@ jobs:
           name: allure-results-ui
           path: allure-results/
           if-no-files-found: ignore
+
+  publish-report:
+    needs: [api-tests, ui-tests]
+    if: always()
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download API Allure results
+        if: needs.api-tests.result != 'skipped'
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: allure-results-api
+          path: results/api
+
+      - name: Download UI Allure results
+        if: needs.ui-tests.result != 'skipped'
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: allure-results-ui
+          path: results/ui
+
+      - name: Install Allure 3
+        run: npm install -g allure
+
+      - name: Generate API Allure report
+        if: ${{ hashFiles('results/api/**') != '' }}
+        run: allure generate results/api -o site/api
+
+      - name: Generate UI Allure report
+        if: ${{ hashFiles('results/ui/**') != '' }}
+        run: allure generate results/ui -o site/ui
+
+      - name: Create Allure reports index
+        run: |
+          mkdir -p site
+          cat > site/index.html <<'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <title>Test Reports</title>
+          </head>
+          <body>
+            <h1>Test Reports</h1>
+            <ul>
+          EOF
+
+          if [ -d site/api ]; then
+            echo '<li><a href="api/">API Tests</a></li>' >> site/index.html
+          fi
+
+          if [ -d site/ui ]; then
+            echo '<li><a href="ui/">UI Tests</a></li>' >> site/index.html
+          fi
+
+          cat >> site/index.html <<'EOF'
+            </ul>
+          </body>
+          </html>
+          EOF
+
+      - name: Publish Allure report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: site
