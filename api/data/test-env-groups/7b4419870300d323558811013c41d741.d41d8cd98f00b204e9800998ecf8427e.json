@@ -1,1 +1,1 @@
-{"id":"7b4419870300d323558811013c41d741.d41d8cd98f00b204e9800998ecf8427e","fullName":"tests.api_tests.test_products#test_get_all_products_api","name":"List all active products with stock information","status":"passed","testResultsByEnv":{"default":"301677dd2ce6b63d04809664649b7ae8"}}
+{"id":"7b4419870300d323558811013c41d741.d41d8cd98f00b204e9800998ecf8427e","fullName":"tests.api_tests.test_products#test_get_all_products_api","name":"List all active products with stock information","status":"passed","testResultsByEnv":{"default":"b327736302a9bc6e02e4d38fe3040b39"}}
