@@ -1,0 +1,1 @@
+{"id":"ca51d69b55555cae5c0bec0bf86f6a2f.4b119bdb24c174c375c3abed81152737","fullName":"tests.ui_tests.test_login_page#test_invalid_credentials_rejection","name":"Invalid credentials are rejected (as admin)","status":"passed","testResultsByEnv":{"default":"6ac0ba1ad4fe4d72dd23867b8b75867b"}}
