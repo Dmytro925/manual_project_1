@@ -1,0 +1,1 @@
+{"id":"f7172ddb883d6518557511827d2e9420.a685b4e3e76b2e0a1aaba36c28ef499d","fullName":"tests.ui_tests.test_login_page#test_unauthenticated_user_redirected_to_login","name":"Unauthenticated users redirected to login for protected routes","status":"passed","testResultsByEnv":{"default":"d1aee2e0f783efbe67e87d8a77df6147"}}
