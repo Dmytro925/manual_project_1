@@ -1,1 +1,1 @@
-{"id":"9debb17a632cbac514dd69c9ab06c3c0.a685b4e3e76b2e0a1aaba36c28ef499d","fullName":"tests.ui_tests.test_login_page#test_locked_user_cannot_login","name":"Locked user cannot login","status":"passed","testResultsByEnv":{"default":"847caf691bd8c3b4383d515caa1ca67c"}}
+{"id":"9debb17a632cbac514dd69c9ab06c3c0.a685b4e3e76b2e0a1aaba36c28ef499d","fullName":"tests.ui_tests.test_login_page#test_locked_user_cannot_login","name":"Locked user cannot login","status":"failed","testResultsByEnv":{"default":"bd0503accc28e58990019c2ced52e4c2"}}

@@ -1,1 +1,1 @@
-{"id":"f531d5fd46dc861017d6c70e353d0b87.a685b4e3e76b2e0a1aaba36c28ef499d","fullName":"tests.ui_tests.test_login_page#test_login_form_display","name":"Login page displays username and password input fields","status":"passed","testResultsByEnv":{"default":"ff70e17263404d59251e0049716c58b4"}}
+{"id":"f531d5fd46dc861017d6c70e353d0b87.a685b4e3e76b2e0a1aaba36c28ef499d","fullName":"tests.ui_tests.test_login_page#test_login_form_display","name":"Login page displays username and password input fields","status":"passed","testResultsByEnv":{"default":"bc4464f31ad155183bca5a091812da51"}}

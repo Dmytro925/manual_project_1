@@ -1,1 +1,1 @@
-{"id":"c7f5fa8ee278771c044beb67b8257cc3.a685b4e3e76b2e0a1aaba36c28ef499d","fullName":"tests.ui_tests.test_login_page#test_standard_user_logout","name":"Logged-in user can logout","status":"passed","testResultsByEnv":{"default":"9755ca944912786e5cbb2128a8c89cc6"}}
+{"id":"c7f5fa8ee278771c044beb67b8257cc3.a685b4e3e76b2e0a1aaba36c28ef499d","fullName":"tests.ui_tests.test_login_page#test_standard_user_logout","name":"Logged-in user can logout","status":"passed","testResultsByEnv":{"default":"aeb73f6670cbc9af76adf87faac65335"}}
