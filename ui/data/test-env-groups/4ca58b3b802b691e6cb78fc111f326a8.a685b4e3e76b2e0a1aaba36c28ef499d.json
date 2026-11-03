@@ -1,1 +1,1 @@
-{"id":"4ca58b3b802b691e6cb78fc111f326a8.a685b4e3e76b2e0a1aaba36c28ef499d","fullName":"tests.ui_tests.test_login_page#test_standard_user_login","name":"Standard user can login successfully","status":"passed","testResultsByEnv":{"default":"2d75b8c12e49804ea207d8b31bd8ae70"}}
+{"id":"4ca58b3b802b691e6cb78fc111f326a8.a685b4e3e76b2e0a1aaba36c28ef499d","fullName":"tests.ui_tests.test_login_page#test_standard_user_login","name":"Standard user can login successfully","status":"passed","testResultsByEnv":{"default":"038a74ae26c6f849f79e038b4b11748c"}}
