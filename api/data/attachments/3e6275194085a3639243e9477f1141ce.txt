@@ -1,3 +1,0 @@
-2026-11-02 22:34:05 [    INFO]: POST https://qademo.com/api/auth/login -> 200 (base_client.py:15)
-2026-11-02 22:34:05 [    INFO]: Response body:
-{"success":true,"data":{"accessToken":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiJzdGFuZGFyZF91c2VyIiwidXNlclR5cGUiOiJzdGFuZGFyZCIsImlhdCI6MTc5MzY1ODg0NSwiZXhwIjoxNzkzNjU5NzQ1fQ.tDANCoqoLEJULA3tP3uIg-JHRRNARx6fqkru6S68DaA","user":{"id":1,"username":"standard_user","userType":"standard"}}} (base_client.py:21)
