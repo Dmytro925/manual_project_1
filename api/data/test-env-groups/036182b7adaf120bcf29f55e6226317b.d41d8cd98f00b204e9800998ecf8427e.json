@@ -1,1 +1,1 @@
-{"id":"036182b7adaf120bcf29f55e6226317b.d41d8cd98f00b204e9800998ecf8427e","fullName":"tests.api_tests.test_auth#test_standard_user_login_api","name":"Standard user login API","status":"passed","testResultsByEnv":{"default":"8aae7c423f90c6ac1804d1e6cc810687"}}
+{"id":"036182b7adaf120bcf29f55e6226317b.d41d8cd98f00b204e9800998ecf8427e","fullName":"tests.api_tests.test_auth#test_standard_user_login_api","name":"Standard user login API","status":"passed","testResultsByEnv":{"default":"63ecf08ea2c86614facef6dfe00ea24f"}}
