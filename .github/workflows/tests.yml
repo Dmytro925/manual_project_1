@@ -93,6 +93,7 @@ jobs:
           if-no-files-found: ignore
 
   publish-report:
+    name: Publish Allure Reports
     needs: [api-tests, ui-tests]
     if: always()
     permissions:
@@ -128,6 +129,7 @@ jobs:
         run: allure generate results/ui -o site/ui
 
       - name: Create Allure reports index
+        if: ${{ hashFiles('results/api/**', 'results/ui/**') != '' }}
         run: |
           mkdir -p site
           cat > site/index.html <<'EOF'
@@ -135,10 +137,10 @@ jobs:
           <html lang="en">
           <head>
             <meta charset="UTF-8">
-            <title>Test Reports</title>
+            <title>Allure reports — run ${{ github.run_id }}</title>
           </head>
           <body>
-            <h1>Test Reports</h1>
+            <h1>Allure reports (run ${{ github.run_id }})</h1>
             <ul>
           EOF
 
@@ -155,9 +157,19 @@ jobs:
           </body>
           </html>
           EOF
+          echo "Report: https://dmytro925.github.io/manual_project_1/ (run ${{ github.run_id }})"
+
+      - name: Check if site exists
+        id: check-site
+        run: |
+          if [ -d "site" ] && [ "$(find site -type f | wc -l)" -gt 0 ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Publish Allure report to GitHub Pages
-        if: always()
+        if: always() && steps.check-site.outputs.exists == 'true'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
