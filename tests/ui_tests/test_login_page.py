@@ -132,7 +132,7 @@ def test_locked_user_cannot_login(page: Page, login_as_locked_user: LoginPage):
 
     with allure.step("Verify that account is locked"):
         expect(login_as_locked_user.login_error_message).to_have_text(
-            "Account is locked"
+            "Account is lockedd"
         )
 
 

@@ -20,4 +20,4 @@ def test_get_all_products_api(products_client: ProductsClient):
         response = products_client.get("/api/products")
         assert response.status_code == expected_status_code
         decoded_content = response.json()
-        assert decoded_content["meta"]["total"]
+        assert decoded_content["meta"]["totall"]
