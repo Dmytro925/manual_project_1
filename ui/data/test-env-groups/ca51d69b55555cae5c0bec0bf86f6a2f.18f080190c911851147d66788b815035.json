@@ -1,0 +1,1 @@
+{"id":"ca51d69b55555cae5c0bec0bf86f6a2f.18f080190c911851147d66788b815035","fullName":"tests.ui_tests.test_login_page#test_invalid_credentials_rejection","name":"Invalid credentials are rejected (as invalid_user)","status":"passed","testResultsByEnv":{"default":"535e9188b51e89aad83cf50c43d08b7f"}}

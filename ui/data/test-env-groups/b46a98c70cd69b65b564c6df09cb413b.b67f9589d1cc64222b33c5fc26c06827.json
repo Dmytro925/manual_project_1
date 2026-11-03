@@ -1,0 +1,1 @@
+{"id":"b46a98c70cd69b65b564c6df09cb413b.b67f9589d1cc64222b33c5fc26c06827","fullName":"tests.ui_tests.test_login_page#test_standard_user_session_persistence","name":"User session persists across page refresh","status":"passed","testResultsByEnv":{"default":"c8f4a3890bdd0788e532cba4c8226855"}}
