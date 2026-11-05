@@ -83,6 +83,7 @@ Collection still needs environment configuration. Normal test runs clear `allure
 | `make ruff` | Auto-fix lint findings and format Python files |
 | `make ty` | Check types |
 | `make codegen` | Open Playwright code generation against the fixed demo-store URL |
+| `make allure` | Generate the Allure report and open the report server |
 | `make clean` | Delete local Allure results and the generated report |
 
 `make codegen` currently uses a hardcoded URL in `Makefile`, not `BASE_URL`. The tests themselves use environment configuration.
@@ -100,16 +101,14 @@ npm install -g allure
 allure --version
 ```
 
-Generate and open a report from existing results, without rerunning tests:
+`make allure` runs the two commands below, or use them manually to generate and open a report from existing results without rerunning tests:
 
 ```bash
-allure generate allure-results -o allure-report
+allure generate allure-results --clean -o allure-report
 allure open allure-report
 ```
 
-Stop the report server with `Ctrl+C`. Use a fresh output directory when you need an isolated report for one run.
-
-**Known helper limitation:** `make allure` currently passes `--clean`, which Allure 3 does not support. Use the commands above until the Make target is updated. See the official [installation](https://allurereport.org/docs/v3/install/), [generation](https://allurereport.org/docs/v3/generate-report/), and [viewing](https://allurereport.org/docs/v3/view-report/) guides.
+Stop the report server with `Ctrl+C`. Use a fresh output directory when you need an isolated report for one run. See the official [installation](https://allurereport.org/docs/v3/install/), [generation](https://allurereport.org/docs/v3/generate-report/), and [viewing](https://allurereport.org/docs/v3/view-report/) guides.
 
 **Public-report warning:** logs, report parameters, and screenshots may contain authentication data. The API client currently logs full response bodies, including login responses; readable pytest parameter IDs do not remove values from Allure data. Review and sanitize artifacts before publishing or sharing them. See [output safety](CODING_STANDARDS.md#configuration-and-output-safety).
 
