@@ -6,7 +6,7 @@
 [project]
 name = "manual-project-1"
 version = "0.1.0"
-description = "Add your description here"
+description = "UI and API test automation for the QA Demo e-commerce store"
 readme = "README.md"
 authors = [
     { name = "Dmytro925", email = "vilalobus365@gmail.com" }
