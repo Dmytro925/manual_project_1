@@ -11,14 +11,14 @@ logger = logging.getLogger(__name__)
 
 
 def _log_response(response: Response, **kwargs: object) -> None:
-    """Log the HTTP response status and body."""
+    """Log the HTTP response summary and, at DEBUG, the body."""
     logger.info(
         "%s %s -> %s",
         response.request.method,
         response.url,
         response.status_code,
     )
-    logger.info("Response body:\n%s", response.text)
+    logger.debug("Response body:\n%s", response.text)
 
 
 class ApiClient:
