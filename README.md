@@ -74,6 +74,16 @@ uv run pytest --collect-only -q -o addopts=''
 
 Collection still needs environment configuration. Normal test runs clear `allure-results/` because `--clean-alluredir` is configured in `pyproject.toml`; save evidence you need before another run.
 
+### Viewing response bodies
+
+The API client logs the method, URL, and status at `INFO`, but response bodies only at `DEBUG`. Lower the level for a single local run when you need the bodies:
+
+```bash
+uv run pytest tests/api_tests/ --log-cli-level=DEBUG
+```
+
+The override applies only to the current invocation. CI and the manually dispatched Tests workflow run plain `uv run pytest` against the committed `INFO` default, so bodies — including login tokens — are not printed or stored in their artifacts. A local `DEBUG` run does write bodies to `allure-results/`, so use demo data only and never publish or share debug-run artifacts.
+
 ## Development commands
 
 | Command | Purpose |
@@ -110,7 +120,7 @@ allure open allure-report
 
 Stop the report server with `Ctrl+C`. Use a fresh output directory when you need an isolated report for one run. See the official [installation](https://allurereport.org/docs/v3/install/), [generation](https://allurereport.org/docs/v3/generate-report/), and [viewing](https://allurereport.org/docs/v3/view-report/) guides.
 
-**Public-report warning:** logs, report parameters, and screenshots may contain authentication data. The API client currently logs full response bodies, including login responses; readable pytest parameter IDs do not remove values from Allure data. Review and sanitize artifacts before publishing or sharing them. See [output safety](CODING_STANDARDS.md#configuration-and-output-safety).
+**Public-report warning:** logs, report parameters, and screenshots may contain authentication data. Response bodies are logged only at `DEBUG` (default runs use `INFO`), but test parameters and debug-run artifacts can still expose values; readable pytest parameter IDs do not remove values from Allure data. Review and sanitize artifacts before publishing or sharing them. See [output safety](CODING_STANDARDS.md#configuration-and-output-safety).
 
 ## GitHub Actions
 
