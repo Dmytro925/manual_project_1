@@ -7,18 +7,20 @@ from requests.sessions import Session
 
 from config.environments import get_api_base_url
 
+from .sanitizer import sanitize_response_body
+
 logger = logging.getLogger(__name__)
 
 
 def _log_response(response: Response, **kwargs: object) -> None:
-    """Log the HTTP response summary and, at DEBUG, the body."""
+    """Log the HTTP response summary and sanitized body."""
     logger.info(
         "%s %s -> %s",
         response.request.method,
         response.url,
         response.status_code,
     )
-    logger.debug("Response body:\n%s", response.text)
+    logger.info("Response body:\n%s", sanitize_response_body(response.text))
 
 
 class ApiClient:

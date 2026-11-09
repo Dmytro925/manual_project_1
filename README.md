@@ -74,15 +74,19 @@ uv run pytest --collect-only -q -o addopts=''
 
 Collection still needs environment configuration. Normal test runs clear `allure-results/` because `--clean-alluredir` is configured in `pyproject.toml`; save evidence you need before another run.
 
-### Viewing response bodies
+### Response body logging
 
-The API client logs the method, URL, and status at `INFO`, but response bodies only at `DEBUG`. Lower the level for a single local run when you need the bodies:
+The API client logs the method, URL, status, and response body at `INFO`. Before logging, it recursively masks the values of known sensitive JSON fields with `****`:
 
-```bash
-uv run pytest tests/api_tests/ --log-cli-level=DEBUG
-```
+| Category | Masked fields |
+| --- | --- |
+| Authentication / Credentials | `password`, `accessToken`, `refreshToken` |
+| Personal information (PII) | `email`, `firstName`, `lastName`, `address`, `shippingFirstName`, `shippingLastName`, `shippingAddress` |
+| Payment information (PCI) | `cardNumber`, `expiryDate`, `cvv`, `cardholderName`, `paymentLastFour` |
 
-The override applies only to the current invocation. CI and the manually dispatched Tests workflow run plain `uv run pytest` against the committed `INFO` default, so bodies — including login tokens — are not printed or stored in their artifacts. A local `DEBUG` run does write bodies to `allure-results/`, so use demo data only and never publish or share debug-run artifacts.
+Non-JSON and plain-text bodies are logged unchanged, so treat them as potentially sensitive. Non-secret identifiers such as usernames and user IDs remain visible to keep logs useful for debugging.
+
+Masking applies only to response bodies. Test parameters, screenshots, and other report artifacts can still contain credentials; review and sanitize the actual stored files before publishing or sharing them. See [output safety](CODING_STANDARDS.md#configuration-and-output-safety).
 
 ## Development commands
 
@@ -120,7 +124,7 @@ allure open allure-report
 
 Stop the report server with `Ctrl+C`. Use a fresh output directory when you need an isolated report for one run. See the official [installation](https://allurereport.org/docs/v3/install/), [generation](https://allurereport.org/docs/v3/generate-report/), and [viewing](https://allurereport.org/docs/v3/view-report/) guides.
 
-**Public-report warning:** logs, report parameters, and screenshots may contain authentication data. Response bodies are logged only at `DEBUG` (default runs use `INFO`), but test parameters and debug-run artifacts can still expose values; readable pytest parameter IDs do not remove values from Allure data. Review and sanitize artifacts before publishing or sharing them. See [output safety](CODING_STANDARDS.md#configuration-and-output-safety).
+**Public-report warning:** logs, report parameters, and screenshots may contain authentication data. Known sensitive response-body fields are masked, but non-JSON bodies, test parameters, and screenshots can still expose values; readable pytest parameter IDs do not remove values from Allure data. Review and sanitize artifacts before publishing or sharing them. See [output safety](CODING_STANDARDS.md#configuration-and-output-safety).
 
 ## GitHub Actions
 
@@ -145,7 +149,7 @@ The site represents the latest publish, not an archive: an API-only publish repl
 
 ```text
 config/                 Environment loading and credential getters
-src/api/                HTTP clients and authenticated user sessions
+src/api/                HTTP clients, response sanitization, and user sessions
 src/pages/              Page objects and shared UI components
 tests/api_tests/        API tests and fixtures
 tests/ui_tests/         UI tests, fixtures, and screenshot attachment hook
