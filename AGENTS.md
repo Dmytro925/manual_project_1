@@ -13,7 +13,7 @@ These files own their respective guidance. Update the relevant document when beh
 ## Current working map
 
 - `src/pages/` — synchronous Playwright page objects; `BasePage` wraps `Page` and provides the shared `Navbar`.
-- `src/api/` — requests-based clients; `AuthClient.login()` returns a `UserClient` sharing the authentication client's HTTP session.
+- `src/api/` — requests-based clients with response-body sanitization; `AuthClient.login()` returns a `UserClient` sharing the authentication client's HTTP session.
 - `config/environments.py` — environment access and credential getters. Importing `config` loads the optional root `.env`; exported variables also work.
 - `tests/api_tests/conftest.py` and `tests/ui_tests/conftest.py` — suite-specific fixtures; root `conftest.py` sets Playwright's base URL and writes Allure environment information.
 - `.github/workflows/ci.yml` — automatic static checks; `tests.yml` — manually dispatched tests and public report publishing.

@@ -64,7 +64,7 @@ Importing a package's own facade from its implementation modules can introduce c
 - Read environment-specific URLs and credentials through `config/environments.py`. Keep `.env.example` as a placeholder-only inventory; when adding a variable, update its getter, setup documentation, and workflow environment mapping as applicable.
 - Keep credentials, tokens, and generated artifacts out of commits, PR descriptions, step names, and attachments shared for review.
 - For new credential scenarios, parameterize scenario labels and resolve credentials inside the fixture/test rather than parameterizing raw passwords. Explicit pytest `ids=` only makes node IDs readable; Allure still records parameter values. Masked/hidden display modes are not a substitute for removing secrets from stored data.
-- The response hook logs bodies only at `DEBUG`; default `INFO` runs log the method, URL, and status. Debug runs and captured parameters can still contain credentials, so treat logs and report artifacts as potentially sensitive; inspect and sanitize the actual stored files before public publication. GitHub Pages reports are public.
+- The response hook logs the method, URL, status, and a sanitized body at `INFO`. Known sensitive JSON fields are masked recursively; non-JSON/plain-text bodies are logged unchanged. Captured parameters and other report artifacts can still contain credentials, so treat logs and report artifacts as potentially sensitive; inspect and sanitize the actual stored files before public publication. GitHub Pages reports are public.
 
 ## Workflow changes
 
