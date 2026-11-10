@@ -26,18 +26,20 @@ SENSITIVE_KEYS = frozenset(
 _LOWER_SENSITIVE_KEYS = frozenset(key.lower() for key in SENSITIVE_KEYS)
 
 
-def sanitize_response_body(body: str) -> str:
+def sanitize_response_body(body: str | bytes) -> str:
     """Mask sensitive values in a JSON response body.
 
-    Keys are matched case-insensitively. Non-JSON and empty bodies are returned
-    unchanged.
+    Accepts text or raw bytes. Keys are matched case-insensitively. Non-JSON and
+    empty bodies are returned as text.
     """
     if not body:
-        return body
+        return ""
 
     try:
         data = json.loads(body)
     except TypeError, ValueError:
+        if isinstance(body, bytes):
+            return body.decode("utf-8", errors="replace")
         return body
 
     _mask_sensitive_data(data)

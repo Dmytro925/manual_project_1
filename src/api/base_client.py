@@ -20,7 +20,7 @@ def _log_response(response: Response, **kwargs: object) -> None:
         response.url,
         response.status_code,
     )
-    logger.info("Response body:\n%s", sanitize_response_body(response.text))
+    logger.info("Response body:\n%s", sanitize_response_body(response.content))
 
 
 class ApiClient:
