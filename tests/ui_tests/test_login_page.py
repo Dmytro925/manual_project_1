@@ -137,12 +137,8 @@ def test_locked_user_cannot_login(page: Page, login_as_locked_user: LoginPage):
 
 
 @pytest.mark.parametrize(
-    "username, password",
-    [
-        ("invalid_user", "invalid_password"),
-        (get_standard_user().username, "wrong_password"),
-        ("admin", get_standard_user().password),
-    ],
+    "scenario",
+    ["both-wrong", "wrong-password", "wrong-user"],
     ids=["both-wrong", "wrong-password", "wrong-user"],
 )
 @allure.id("FR-AUTH-004")
@@ -150,9 +146,9 @@ def test_locked_user_cannot_login(page: Page, login_as_locked_user: LoginPage):
 @allure.feature("Login Page (/login)")
 @allure.story("Invalid Credentials Rejection")
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Invalid credentials are rejected (as {username})")
+@allure.title("Invalid credentials are rejected ({scenario})")
 def test_invalid_credentials_rejection(
-    page: Page, username: str, password: str, login_page: LoginPage
+    page: Page, scenario: str, login_page: LoginPage
 ):
     """Description: Invalid credentials are rejected
     Precondition: User is on login page
@@ -161,6 +157,13 @@ def test_invalid_credentials_rejection(
     Login fails
     Error message displayed: "Invalid username or password"
     User remains on login page"""
+    standard_user = get_standard_user()
+    credentials = {
+        "both-wrong": ("invalid_user", "invalid_password"),
+        "wrong-password": (standard_user.username, "wrong_password"),
+        "wrong-user": ("admin", standard_user.password),
+    }
+    username, password = credentials[scenario]
 
     with allure.step("Verify that 'Invalid username or password' message is displayed"):
         login_page.login(username, password)

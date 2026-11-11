@@ -35,12 +35,12 @@ def test_standard_user_login_api(auth_client: AuthClient):
 
 
 @pytest.mark.parametrize(
-    "username, password, expected_status_code",
+    "scenario, expected_status_code",
     [
-        (get_standard_user().username, "wrong_password", 401),
-        ("wrong_user", get_standard_user().password, 401),
-        ("wrong_user", "wrong_password", 401),
-        ("", "", 400),
+        ("wrong-password", 401),
+        ("wrong-user", 401),
+        ("both-wrong", 401),
+        ("empty-credentials", 400),
     ],
     ids=["wrong-password", "wrong-user", "both-wrong", "empty-credentials"],
 )
@@ -49,14 +49,22 @@ def test_standard_user_login_api(auth_client: AuthClient):
 @allure.feature("Login Page (/login)")
 @allure.story("POST /api/auth/login")
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Standard user login API")
+@allure.title("Invalid login attempts API ({scenario})")
 def test_login_with_invalid_credentials_api(
-    auth_client: AuthClient, username: str, password: str, expected_status_code: int
+    auth_client: AuthClient, scenario: str, expected_status_code: int
 ):
     """Missing or invalid authentication
     Endpoint: POST /api/auth/login"""
+    standard_user = get_standard_user()
+    credentials = {
+        "wrong-password": (standard_user.username, "wrong_password"),
+        "wrong-user": ("wrong_user", standard_user.password),
+        "both-wrong": ("wrong_user", "wrong_password"),
+        "empty-credentials": ("", ""),
+    }
+    username, password = credentials[scenario]
 
-    with allure.step("Verify invalid credentials for standard_user"):
+    with allure.step(f"Verify invalid credentials ({scenario})"):
         response = auth_client.post(
             path="/api/auth/login",
             json={"username": username, "password": password},
