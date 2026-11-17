@@ -1,0 +1,3 @@
+2026-11-17 16:00:26 [    INFO]: POST https://qademo.com/api/auth/login -> 200 (base_client.py:17)
+2026-11-17 16:00:26 [    INFO]: Response body:
+{"success": true, "data": {"accessToken": "****", "user": {"id": 1, "username": "standard_user", "userType": "standard"}}} (base_client.py:23)
