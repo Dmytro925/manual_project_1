@@ -1,1 +1,1 @@
-{"id":"ad75441c62b0065041c4c78ff399285e.45372b3af8c26a824904c85ff3ae2395","fullName":"tests.api_tests.test_auth#test_login_with_invalid_credentials_api","name":"Invalid login attempts API (wrong-user)","status":"passed","testResultsByEnv":{"default":"ad8c7a5e1ccbe051d9fe973607e8ef5b"}}
+{"id":"ad75441c62b0065041c4c78ff399285e.45372b3af8c26a824904c85ff3ae2395","fullName":"tests.api_tests.test_auth#test_login_with_invalid_credentials_api","name":"Invalid login attempts API (wrong-user)","status":"passed","testResultsByEnv":{"default":"a60a4513f7771d6c944c14251cd8f304"}}

@@ -1,0 +1,1 @@
+{"id":"ca51d69b55555cae5c0bec0bf86f6a2f.d6efb468dd7db32ea06dd1c5ffa80439","fullName":"tests.ui_tests.test_login_page#test_invalid_credentials_rejection","name":"Invalid credentials are rejected (wrong-password)","status":"passed","testResultsByEnv":{"default":"6dd839f9b4ea5f61c2f79ff7348bdffe"}}

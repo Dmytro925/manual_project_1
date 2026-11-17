@@ -1,0 +1,3 @@
+2026-11-17 16:10:55 [    INFO]: POST https://qademo.com/api/auth/login -> 401 (base_client.py:17)
+2026-11-17 16:10:55 [    INFO]: Response body:
+{"success": false, "error": {"code": "INVALID_CREDENTIALS", "message": "Invalid username or password"}} (base_client.py:23)
