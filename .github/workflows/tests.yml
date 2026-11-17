@@ -19,6 +19,15 @@ on:
           - firefox
           - webkit
         default: chromium
+      reruns:
+        description: "Reruns for each failing test (0 disables)"
+        type: choice
+        options:
+          - "0"
+          - "1"
+          - "2"
+          - "3"
+        default: "1"
 
 env:
   BASE_URL: ${{ secrets.BASE_URL }}
@@ -53,7 +62,7 @@ jobs:
         run: uv sync --locked
 
       - name: Run API tests
-        run: uv run pytest tests/api_tests/
+        run: uv run pytest tests/api_tests/ --reruns ${{ inputs.reruns }}
 
       - name: Upload API Allure results
         if: always()
@@ -84,7 +93,7 @@ jobs:
         run: uv run playwright install --with-deps ${{ inputs.browser }}
 
       - name: Run UI tests
-        run: uv run pytest tests/ui_tests/ --browser ${{ inputs.browser }}
+        run: uv run pytest tests/ui_tests/ --browser ${{ inputs.browser }} --reruns ${{ inputs.reruns }}
 
       - name: Upload UI Allure results
         if: always()
