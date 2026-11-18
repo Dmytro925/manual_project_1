@@ -29,7 +29,7 @@ Steps:
   1. one request to the endpoint under test, exact method/path/body
      - HTTP status;
      - every asserted response field or error detail (one or more per step).
-Category: API / Functional / <Module> / <Positive|Negative>
+Category: API / Functional / [Admin /] <Module> / <Positive|Negative>
 ```
 
 - One test case has exactly one endpoint under test; extra steps are input variations of the same request.
@@ -37,6 +37,9 @@ Category: API / Functional / <Module> / <Positive|Negative>
 - Assert only the stable contract: no exact account/order IDs, no environment-dependent fields.
 - Case text is English. Sensitive values stay placeholders in the repo copy.
 - Prefix = short endpoint-family token (e.g. `LOGIN`, `OSTAT`); the functional module lives in the Category.
+- The `Admin` category marker is mandatory when the endpoint under test is admin-only or the case performs its steps under test as admin (e.g. `API / Functional / Admin / Orders / Negative`). Admin used only to prepare or clean up state leaves the Category plain.
+- Teardown and corroboration steps are allowed inside a case when labeled as such ("cleanup", "corroboration"); they never become the subject under test — the case still has exactly one endpoint under test.
+- Repeated request bodies and response contracts may be defined once above the cases as named building blocks (e.g. a valid checkout body, a 201 success contract) and referenced by name from expected results.
 
 ## Environment
 
