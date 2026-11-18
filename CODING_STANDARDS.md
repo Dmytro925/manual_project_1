@@ -72,6 +72,7 @@ Importing a package's own facade from its implementation modules can introduce c
 - Keep lint, format checking, and type checking as separate, non-mutating CI steps. Local verification commands are in [CONTRIBUTING.md](CONTRIBUTING.md#verification).
 - Preserve failure evidence: upload available results even when tests fail, allow report generation from whichever suite produced results, and keep the test failure visible in the workflow conclusion.
 - Keep retries explicit and visible. Rerun flags belong to the manually dispatched workflow input or a local command, never to `addopts`. Use reruns to absorb environment noise in live tests, not to hide reproducible failures; investigate a test that fails consistently instead of raising its retry count.
+- Keep repeats and parallel runs opt-in as well. `--count` and `-n` belong to a local command, never to `addopts`. Tests that share an account, cart, or session state on the live store must stay in one `xdist_group` or remain serial before parallel runs are enabled in CI.
 - Grant write permissions only to jobs that need them, currently the report-publishing job. Verify action references against real upstream tags instead of guessing a floating major version.
 
 ## Background decisions

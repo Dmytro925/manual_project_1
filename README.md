@@ -84,6 +84,26 @@ uv run pytest tests/api_tests/ --reruns 1
 
 `--reruns` takes the number of retries, not the total number of attempts: `--reruns 1` gives a failing test at most two attempts. Retries are opt-in and are not part of `addopts`, so a normal run still executes each test once. A test that passes on a retry is reported as passed, which hides the original failure; use retries to absorb environment noise in live tests, not to make a reproducible defect look green. Each attempt produces its own Allure result, grouped in the test's **Retries** tab. Reruns are provided by the `pytest-rerunfailures` plugin, which is installed by `uv sync`.
 
+### Repeating tests
+
+`pytest-repeat` runs every collected test N times regardless of the result:
+
+```bash
+uv run pytest tests/ui_tests/test_login_page.py::test_login_form_display --count=10
+```
+
+`--count` is implemented as parametrization, so the report lists 10 separate executions (`'chromium',0` … `'chromium',9`) instead of one test with retries. Repeats are opt-in and are not part of `addopts`; they multiply runtime and repeat every side effect of the test, so use them to reproduce intermittency, not as a default.
+
+### Running tests in parallel
+
+`pytest-xdist` distributes tests across worker processes:
+
+```bash
+uv run pytest tests/ui_tests/ -n 5
+```
+
+`-n` is shorthand for `--dist=load`, which sends any pending test to any free worker. Each worker starts its own browser, so choose a worker count your machine can handle; `-n auto` uses one worker per physical CPU core. Tests that share an account, cart, or session state on the live store must not be split across workers: keep them serial or mark them with `xdist_group` first. Parallel runs are opt-in and the Tests workflow still runs serially. The distribution modes and the reasoning for this suite are analysed in [#43](https://github.com/Dmytro925/manual_project_1/issues/43).
+
 ### Response body logging
 
 The API client logs the method, URL, status, and response body at `INFO`. Before logging, it recursively masks the values of known sensitive JSON fields with `****`:
