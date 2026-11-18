@@ -157,4 +157,6 @@ conftest.py             Shared pytest configuration and Allure environment hook
 .github/workflows/      Static checks and manual test/report workflows
 ```
 
+Manual test cases are not stored in this repository. They live in TTGO, the external test-management system, where cases may safely contain sensitive test data; engineers and coding agents manage them through the `ttgo` CLI (documented in `.agents/skills/ttgo/`).
+
 For contribution workflow, commit messages, and PR expectations, read [CONTRIBUTING.md](CONTRIBUTING.md). Code and test conventions live in [CODING_STANDARDS.md](CODING_STANDARDS.md); [AGENTS.md](AGENTS.md) directs coding agents to the relevant guidance.
