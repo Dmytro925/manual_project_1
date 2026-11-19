@@ -19,6 +19,7 @@ These files own their respective guidance. Update the relevant document when beh
 - `.github/workflows/ci.yml` — automatic static checks; `tests.yml` — manually dispatched tests and public report publishing.
 - `.agents/skills/ttgo/` — agent skill documenting the external `ttgo` test-management CLI, which stores all manual test cases; not part of its tooling.
 - `.agents/skills/api-functional-test-cases/` — agent skill for generating live-verified manual API functional test cases from the API docs; working copies stay out of the repository.
+- `.agents/skills/ttgo-case-migration/` — agent skill for publishing the `docs/test-cases/` working copies into TTGO as permanent cases (folder/category mapping, credential inlining, intended-behavior policy).
 
 ## Execution
 
