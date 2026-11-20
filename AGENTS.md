@@ -17,7 +17,9 @@ These files own their respective guidance. Update the relevant document when beh
 - `config/environments.py` — environment access and credential getters. Importing `config` loads the optional root `.env`; exported variables also work.
 - `tests/api_tests/conftest.py` and `tests/ui_tests/conftest.py` — suite-specific fixtures; root `conftest.py` sets Playwright's base URL and writes Allure environment information.
 - `.github/workflows/ci.yml` — automatic static checks; `tests.yml` — manually dispatched tests and public report publishing.
-- `.agents/skills/ttgo/` — agent skill documenting the external `ttgo` test-management CLI; not part of the test suite or its tooling.
+- `.agents/skills/ttgo/` — agent skill documenting the external `ttgo` test-management CLI, which stores all manual test cases; not part of its tooling.
+- `.agents/skills/api-functional-test-cases/` — agent skill for generating live-verified manual API functional test cases from the API docs; working copies stay out of the repository.
+- `.agents/skills/ttgo-case-migration/` — agent skill for publishing the `docs/test-cases/` working copies into TTGO as permanent cases (folder/category mapping, credential inlining, intended-behavior policy).
 
 ## Execution
 

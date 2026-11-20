@@ -27,3 +27,6 @@ __pycache__/
 allure-results/
 allure-report/
 test-results/
+
+# Manual test case working copies (cases live in TTGO, not in this repository)
+docs/test-cases/

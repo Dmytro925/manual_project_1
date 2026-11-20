@@ -52,11 +52,11 @@ Importing a package's own facade from its implementation modules can introduce c
 
 - Use one file per UI page or API module, directly under the corresponding suite: `test_login_page.py`, `test_auth.py`, `test_products.py`. Names are lowercase snake_case; requirement IDs and numeric ordering prefixes belong outside filenames.
 - Write plain test functions named for the subject and expected behavior: `test_<subject>_<expected_behavior>`. Use Allure's hierarchy instead of test classes to group scenarios.
-- New tests include `allure.id`, `epic`, `feature`, `story`, `severity`, and a readable `title`. Preserve this metadata when moving tests.
-- Requirement IDs use the existing hyphenated format, such as `FR-AUTH-004`. Match the issue/spec's mapping rather than inventing IDs or using GitHub issue numbers. API and UI tests currently share IDs for the same requirement; unrelated scenarios must not borrow those IDs. Confirm an unclear mapping with a maintainer.
+- New automated tests are implemented from TTGO manual test cases and mirror them: `allure.id` holds the case ID (e.g. `LOGIN-001`), `@allure.feature` the case's module (e.g. `Auth`), `@allure.title` the case title verbatim, and the docstring the case description. `allure.severity` is optional automator metadata, not mirrored from the case. Preserve this metadata when moving tests. `epic` and `story` are no longer added to new tests.
+- Requirement IDs use the existing hyphenated format, such as `FR-AUTH-004`, and are referenced in TTGO manual case descriptions; automated tests inherit them through the mirrored description. Match the issue/spec's mapping rather than inventing IDs or using GitHub issue numbers, and do not use requirement IDs as `allure.id`. Existing tests keep their current metadata; migrate them to TTGO case IDs once the cases are imported into TTGO.
 - Use `with allure.step("..."):` around logical test sections, not `@allure.step` decorators. Keep steps meaningful rather than wrapping every statement.
 - Use descriptive docstrings for report descriptions. Parameter substitution belongs in `@allure.title`, not docstrings; only substitute non-sensitive values.
-- Parameterize input variations with readable, non-sensitive `ids=` labels. Parameterized variants share their test's requirement ID.
+- Parameterize input variations with readable, non-sensitive `ids=` labels. Parameterized variants share the test's `allure.id`; `@allure.title` substitution distinguishes them.
 - For API checks, verify the status before asserting the response body's contract. Derive expectations from requirements, not merely from what the current demo happens to return. Investigate external-app failures rather than relaxing assertions to obtain a green run.
 
 ## Configuration and output safety
