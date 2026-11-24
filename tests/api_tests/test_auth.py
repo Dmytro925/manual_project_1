@@ -1,3 +1,6 @@
+import base64
+import json
+
 import allure
 import pytest
 
@@ -5,21 +8,31 @@ from config.environments import get_standard_user
 from src.api import AuthClient
 
 
-@allure.id("FR-AUTH-002")
-@allure.epic("Authentication API")
-@allure.feature("Login Page (/login)")
-@allure.story("POST /api/auth/login")
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Standard user login API")
-def test_standard_user_login_api(auth_client: AuthClient):
-    """Getting an Access Token
-    Endpoint: POST /api/auth/login
-    Access Token: Expires in 15 minutes
-    Refresh Token: Expires in 7 days"""
-    expected_status_code = 200
+def _jwt_lifetime_seconds(token: str) -> int:
+    """Return a JWT's lifetime in seconds from its unverified claims."""
+    payload = token.split(".")[1]
+    claims = json.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
+    return int(claims["exp"]) - int(claims["iat"])
 
-    with allure.step("Verify that standard_user is logged in"):
-        standard_user = get_standard_user()
+
+@allure.id("LOGIN-001")
+@allure.feature("Auth")
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Successful login with valid standard user credentials")
+@allure.issue(
+    "https://github.com/Dmytro925/manual_project_1/issues/50",
+    "BUG #50: login response omits refreshToken in the body",
+)
+def test_standard_user_login_succeeds(auth_client: AuthClient):
+    """The pre-seeded standard customer account authenticates with its correct
+    username and password.
+
+    The API returns the success flag, the user identity, a usable JWT access
+    token that expires in 15 minutes, and a refresh token.
+    """
+    standard_user = get_standard_user()
+
+    with allure.step("Send POST /api/auth/login with the standard user credentials"):
         response = auth_client.post(
             path="/api/auth/login",
             json={
@@ -28,10 +41,25 @@ def test_standard_user_login_api(auth_client: AuthClient):
             },
         )
 
-        assert response.status_code == expected_status_code
-        decoded_content = response.json()
-        assert decoded_content["data"]["user"]["username"] == standard_user.username
-        assert decoded_content["data"]["accessToken"]
+    with allure.step("Verify the success flag and the returned user identity"):
+        assert response.status_code == 200
+        payload = response.json()
+        assert payload["success"] is True
+        data = payload["data"]
+        assert isinstance(data["user"]["id"], int)
+        assert data["user"]["username"] == standard_user.username
+        assert data["user"]["userType"] == "standard"
+
+    with allure.step("Verify the access token is a JWT that expires in 15 minutes"):
+        access_token = data["accessToken"]
+        assert isinstance(access_token, str)
+        assert len(access_token.split(".")) == 3
+        assert _jwt_lifetime_seconds(access_token) == 900
+
+    with allure.step("Verify a refresh token is returned"):
+        refresh_token = data.get("refreshToken")
+        assert isinstance(refresh_token, str)
+        assert refresh_token
 
 
 @pytest.mark.parametrize(
