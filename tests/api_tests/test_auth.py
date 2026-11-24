@@ -6,6 +6,7 @@ import pytest
 
 from config.environments import get_standard_user
 from src.api import AuthClient
+from tests.api_tests.accounts import DisposableAccount
 
 
 def _jwt_lifetime_seconds(token: str) -> int:
@@ -60,6 +61,49 @@ def test_standard_user_login_succeeds(auth_client: AuthClient):
         refresh_token = data.get("refreshToken")
         assert isinstance(refresh_token, str)
         assert refresh_token
+
+
+@allure.id("LOGIN-002")
+@allure.feature("Auth")
+@allure.severity(allure.severity_level.NORMAL)
+@allure.title("Login accepts the account email as username, ignoring letter case")
+def test_login_accepts_account_email_ignoring_case(
+    auth_client: AuthClient, disposable_account: DisposableAccount
+):
+    """The username field of the login request accepts the email address
+    registered on the account instead of the username, and the lookup is not
+    case-sensitive."""
+    with allure.step("Send POST /api/auth/login with the account email"):
+        response = auth_client.post(
+            path="/api/auth/login",
+            json={
+                "username": disposable_account.email,
+                "password": disposable_account.password,
+            },
+        )
+        assert response.status_code == 200
+        payload = response.json()
+        assert payload["success"] is True
+        user = payload["data"]["user"]
+        assert user["username"] == disposable_account.username
+        assert user["userType"] == "standard"
+        access_token = payload["data"]["accessToken"]
+        assert isinstance(access_token, str)
+        assert access_token
+        assert len(access_token.split(".")) == 3
+
+    with allure.step("Send POST /api/auth/login with the email in upper case"):
+        response = auth_client.post(
+            path="/api/auth/login",
+            json={
+                "username": disposable_account.email.upper(),
+                "password": disposable_account.password,
+            },
+        )
+        assert response.status_code == 200
+        payload = response.json()
+        assert payload["success"] is True
+        assert payload["data"]["user"]["username"] == disposable_account.username
 
 
 @pytest.mark.parametrize(

@@ -1,9 +1,11 @@
+import uuid
 from collections.abc import Generator
 
 import pytest
 
 from config.environments import get_standard_user
 from src.api import ApiClient, AuthClient, ProductsClient, UserClient
+from tests.api_tests.accounts import DisposableAccount
 
 
 @pytest.fixture()
@@ -28,6 +30,23 @@ def auth_client() -> Generator[AuthClient]:
     client = AuthClient()
     yield client
     client.close()
+
+
+@pytest.fixture()
+def disposable_account(auth_client: AuthClient) -> DisposableAccount:
+    """Create a disposable standard account through the signup endpoint."""
+    email = f"qa.{uuid.uuid4().hex}@mailinator.com"
+    password = "NewUser1!"
+    response = auth_client.post(
+        "/api/auth/signup",
+        json={"email": email, "phone": "380501234567", "password": password},
+    )
+    user = response.json()["data"]["user"]
+    return DisposableAccount(
+        username=user["username"],
+        email=user["email"],
+        password=password,
+    )
 
 
 @pytest.fixture
