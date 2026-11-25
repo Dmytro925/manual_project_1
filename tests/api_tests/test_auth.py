@@ -1,21 +1,21 @@
 import base64
 import json
+from typing import Any
 
 import allure
 import pytest
 
-from config.environments import get_locked_user, get_standard_user
+from config.environments import get_admin_user, get_locked_user, get_standard_user
 from src.api import AuthClient
 from tests.api_tests.accounts import DisposableAccount
 
 ACCESS_TOKEN_TTL_SECONDS = 900
 
 
-def _jwt_lifetime_seconds(token: str) -> int:
-    """Return a JWT's lifetime in seconds from its unverified claims."""
+def _jwt_claims(token: str) -> dict[str, Any]:
+    """Return a JWT's unverified claims."""
     payload = token.split(".")[1]
-    claims = json.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
-    return int(claims["exp"]) - int(claims["iat"])
+    return json.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
 
 
 @allure.id("LOGIN-001")
@@ -57,7 +57,8 @@ def test_standard_user_login_succeeds(auth_client: AuthClient):
         access_token = data["accessToken"]
         assert isinstance(access_token, str)
         assert len(access_token.split(".")) == 3
-        assert _jwt_lifetime_seconds(access_token) == ACCESS_TOKEN_TTL_SECONDS
+        claims = _jwt_claims(access_token)
+        assert claims["exp"] - claims["iat"] == ACCESS_TOKEN_TTL_SECONDS
 
     with allure.step("Verify a refresh token is returned"):
         refresh_token = data.get("refreshToken")
@@ -163,6 +164,99 @@ def test_login_of_locked_account_is_rejected(auth_client: AuthClient):
         assert payload["error"]["code"] == "ACCOUNT_LOCKED"
         assert payload["error"]["message"] == "Account is locked"
         assert "data" not in payload
+
+
+@allure.id("LOGIN-006")
+@allure.feature("Auth")
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Admin logs in with the date-based dynamic password")
+def test_admin_login_with_date_based_password(auth_client: AuthClient):
+    """The admin_user account authenticates with the dynamic password formed as
+    $Admin followed by the current date in DDMMYYYY format.
+
+    The returned token identifies the caller as an admin.
+    """
+    admin_user = get_admin_user()
+
+    with allure.step("Send POST /api/auth/login with the date-based admin password"):
+        response = auth_client.post(
+            path="/api/auth/login",
+            json={"username": admin_user.username, "password": admin_user.password},
+        )
+
+    with allure.step("Verify the admin identity and the token claims"):
+        assert response.status_code == 200
+        payload = response.json()
+        assert payload["success"] is True
+        assert payload["data"]["user"]["username"] == admin_user.username
+        assert payload["data"]["user"]["userType"] == "admin"
+        access_token = payload["data"]["accessToken"]
+        assert len(access_token.split(".")) == 3
+        claims = _jwt_claims(access_token)
+        assert claims["username"] == admin_user.username
+        assert claims["userType"] == "admin"
+        assert claims["exp"] - claims["iat"] == ACCESS_TOKEN_TTL_SECONDS
+
+
+@allure.id("LOGIN-007")
+@allure.feature("Auth")
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Unknown user gets the same error as a wrong password")
+def test_login_unknown_user_matches_wrong_password_error(auth_client: AuthClient):
+    """Logging in with a username that does not exist returns exactly the same
+    error as an existing account with a wrong password, so the response cannot
+    be used to enumerate valid usernames."""
+    standard_user = get_standard_user()
+
+    with allure.step("Send POST /api/auth/login with a wrong password"):
+        wrong_password = auth_client.post(
+            path="/api/auth/login",
+            json={"username": standard_user.username, "password": "WrongPass_42!"},
+        )
+
+    with allure.step("Send POST /api/auth/login with an unknown username"):
+        unknown_user = auth_client.post(
+            path="/api/auth/login",
+            json={"username": "no_such_user_xyz_42", "password": "Whatever_42!"},
+        )
+
+    with allure.step("Verify both requests return the same invalid-credentials error"):
+        assert wrong_password.status_code == 401
+        assert unknown_user.status_code == 401
+        wrong_password_payload = wrong_password.json()
+        unknown_user_payload = unknown_user.json()
+        assert unknown_user_payload == wrong_password_payload
+        assert unknown_user_payload["success"] is False
+        assert unknown_user_payload["error"]["code"] == "INVALID_CREDENTIALS"
+        assert (
+            unknown_user_payload["error"]["message"] == "Invalid username or password"
+        )
+        assert "data" not in unknown_user_payload
+
+
+@allure.id("LOGIN-008")
+@allure.feature("Auth")
+@allure.severity(allure.severity_level.NORMAL)
+@allure.title("Malformed JSON body is rejected")
+def test_login_with_malformed_json_is_rejected(auth_client: AuthClient):
+    """A request that declares Content-Type: application/json but sends a
+    syntactically broken JSON body fails with HTTP 400 and a controlled error
+    message, without leaking internal server details."""
+    with allure.step("Send POST /api/auth/login with a truncated JSON body"):
+        response = auth_client.post(
+            path="/api/auth/login",
+            data='{"username": "standard_user", ',
+            headers={"Content-Type": "application/json"},
+        )
+
+    with allure.step("Verify the controlled error response"):
+        assert response.status_code == 400
+        payload = response.json()
+        assert payload["success"] is False
+        assert payload["error"]["code"] == "HTTP_ERROR"
+        assert payload["error"]["message"] == "Malformed JSON in request body"
+        assert set(payload) == {"success", "error"}
+        assert set(payload["error"]) == {"code", "message"}
 
 
 @pytest.mark.parametrize(
