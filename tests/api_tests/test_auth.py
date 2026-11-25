@@ -166,6 +166,47 @@ def test_login_of_locked_account_is_rejected(auth_client: AuthClient):
         assert "data" not in payload
 
 
+@pytest.mark.parametrize(
+    "scenario, invalid_fields",
+    [
+        ("missing-username", ("username",)),
+        ("missing-password", ("password",)),
+        ("empty-username", ("username",)),
+        ("empty-body", ("username", "password")),
+    ],
+    ids=["missing-username", "missing-password", "empty-username", "empty-body"],
+)
+@allure.id("LOGIN-005")
+@allure.feature("Auth")
+@allure.severity(allure.severity_level.NORMAL)
+@allure.title("Missing or empty required login fields fail validation ({scenario})")
+def test_login_with_missing_or_empty_fields_fails_validation(
+    auth_client: AuthClient, scenario: str, invalid_fields: tuple[str, ...]
+):
+    """Missing or empty required login fields are rejected with HTTP 400 and a
+    validation error that names every offending field."""
+    standard_user = get_standard_user()
+    payloads = {
+        "missing-username": {"password": standard_user.password},
+        "missing-password": {"username": standard_user.username},
+        "empty-username": {"username": "", "password": standard_user.password},
+        "empty-body": {},
+    }
+
+    with allure.step(f"Send POST /api/auth/login with an invalid body ({scenario})"):
+        response = auth_client.post(path="/api/auth/login", json=payloads[scenario])
+
+    with allure.step("Verify the validation error names every offending field"):
+        assert response.status_code == 400
+        body = response.json()
+        assert body["success"] is False
+        assert body["error"]["name"] == "ZodError"
+        issues = body["error"]["issues"]
+        assert {issue["path"][0] for issue in issues} == set(invalid_fields)
+        assert all(issue["message"] for issue in issues)
+        assert "data" not in body
+
+
 @allure.id("LOGIN-006")
 @allure.feature("Auth")
 @allure.severity(allure.severity_level.CRITICAL)
@@ -257,42 +298,3 @@ def test_login_with_malformed_json_is_rejected(auth_client: AuthClient):
         assert payload["error"]["message"] == "Malformed JSON in request body"
         assert set(payload) == {"success", "error"}
         assert set(payload["error"]) == {"code", "message"}
-
-
-@pytest.mark.parametrize(
-    "scenario, expected_status_code",
-    [
-        ("wrong-password", 401),
-        ("wrong-user", 401),
-        ("both-wrong", 401),
-        ("empty-credentials", 400),
-    ],
-    ids=["wrong-password", "wrong-user", "both-wrong", "empty-credentials"],
-)
-@allure.id("FR-AUTH-004")
-@allure.epic("Authentication API")
-@allure.feature("Login Page (/login)")
-@allure.story("POST /api/auth/login")
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Invalid login attempts API ({scenario})")
-def test_login_with_invalid_credentials_api(
-    auth_client: AuthClient, scenario: str, expected_status_code: int
-):
-    """Missing or invalid authentication
-    Endpoint: POST /api/auth/login"""
-    standard_user = get_standard_user()
-    credentials = {
-        "wrong-password": (standard_user.username, "wrong_password"),
-        "wrong-user": ("wrong_user", standard_user.password),
-        "both-wrong": ("wrong_user", "wrong_password"),
-        "empty-credentials": ("", ""),
-    }
-    username, password = credentials[scenario]
-
-    with allure.step(f"Verify invalid credentials ({scenario})"):
-        response = auth_client.post(
-            path="/api/auth/login",
-            json={"username": username, "password": password},
-        )
-
-        assert response.status_code == expected_status_code
