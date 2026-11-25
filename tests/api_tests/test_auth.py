@@ -4,9 +4,11 @@ import json
 import allure
 import pytest
 
-from config.environments import get_standard_user
+from config.environments import get_locked_user, get_standard_user
 from src.api import AuthClient
 from tests.api_tests.accounts import DisposableAccount
+
+ACCESS_TOKEN_TTL_SECONDS = 900
 
 
 def _jwt_lifetime_seconds(token: str) -> int:
@@ -55,7 +57,7 @@ def test_standard_user_login_succeeds(auth_client: AuthClient):
         access_token = data["accessToken"]
         assert isinstance(access_token, str)
         assert len(access_token.split(".")) == 3
-        assert _jwt_lifetime_seconds(access_token) == 900
+        assert _jwt_lifetime_seconds(access_token) == ACCESS_TOKEN_TTL_SECONDS
 
     with allure.step("Verify a refresh token is returned"):
         refresh_token = data.get("refreshToken")
@@ -104,6 +106,63 @@ def test_login_accepts_account_email_ignoring_case(
         payload = response.json()
         assert payload["success"] is True
         assert payload["data"]["user"]["username"] == disposable_account.username
+
+
+@allure.id("LOGIN-003")
+@allure.feature("Auth")
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Login with a wrong password is rejected")
+def test_login_with_wrong_password_is_rejected(auth_client: AuthClient):
+    """An existing account combined with an incorrect password is refused with
+    the invalid-credentials error and HTTP 401.
+
+    The response contains no token and does not reveal whether the username or
+    the password was wrong.
+    """
+    standard_user = get_standard_user()
+
+    with allure.step(
+        "Send POST /api/auth/login with the standard user's username and a wrong password"
+    ):
+        response = auth_client.post(
+            path="/api/auth/login",
+            json={
+                "username": standard_user.username,
+                "password": "WrongPass_42!",
+            },
+        )
+        assert response.status_code == 401
+        payload = response.json()
+        assert payload["success"] is False
+        assert payload["error"]["code"] == "INVALID_CREDENTIALS"
+        assert payload["error"]["message"] == "Invalid username or password"
+        assert "data" not in payload
+
+
+@allure.id("LOGIN-004")
+@allure.feature("Auth")
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Login of the locked account is rejected")
+def test_login_of_locked_account_is_rejected(auth_client: AuthClient):
+    """The pre-seeded locked account cannot authenticate even with its correct
+    password: the API refuses with HTTP 403 and a locked-account error, and
+    returns no token."""
+    locked_user = get_locked_user()
+
+    with allure.step("Send POST /api/auth/login with the locked account credentials"):
+        response = auth_client.post(
+            path="/api/auth/login",
+            json={
+                "username": locked_user.username,
+                "password": locked_user.password,
+            },
+        )
+        assert response.status_code == 403
+        payload = response.json()
+        assert payload["success"] is False
+        assert payload["error"]["code"] == "ACCOUNT_LOCKED"
+        assert payload["error"]["message"] == "Account is locked"
+        assert "data" not in payload
 
 
 @pytest.mark.parametrize(
