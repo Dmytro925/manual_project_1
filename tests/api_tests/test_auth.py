@@ -43,8 +43,6 @@ def test_standard_user_login_succeeds(auth_client: AuthClient):
                 "password": standard_user.password,
             },
         )
-
-    with allure.step("Verify the success flag and the returned user identity"):
         assert response.status_code == 200
         payload = response.json()
         assert payload["success"] is True
@@ -52,15 +50,11 @@ def test_standard_user_login_succeeds(auth_client: AuthClient):
         assert isinstance(data["user"]["id"], int)
         assert data["user"]["username"] == standard_user.username
         assert data["user"]["userType"] == "standard"
-
-    with allure.step("Verify the access token is a JWT that expires in 15 minutes"):
         access_token = data["accessToken"]
         assert isinstance(access_token, str)
         assert len(access_token.split(".")) == 3
         claims = _jwt_claims(access_token)
         assert claims["exp"] - claims["iat"] == ACCESS_TOKEN_TTL_SECONDS
-
-    with allure.step("Verify a refresh token is returned"):
         refresh_token = data.get("refreshToken")
         assert isinstance(refresh_token, str)
         assert refresh_token
@@ -133,11 +127,13 @@ def test_login_with_wrong_password_is_rejected(auth_client: AuthClient):
             },
         )
         assert response.status_code == 401
-        payload = response.json()
-        assert payload["success"] is False
-        assert payload["error"]["code"] == "INVALID_CREDENTIALS"
-        assert payload["error"]["message"] == "Invalid username or password"
-        assert "data" not in payload
+        assert response.json() == {
+            "success": False,
+            "error": {
+                "code": "INVALID_CREDENTIALS",
+                "message": "Invalid username or password",
+            },
+        }
 
 
 @allure.id("LOGIN-004")
@@ -195,8 +191,6 @@ def test_login_with_missing_or_empty_fields_fails_validation(
 
     with allure.step(f"Send POST /api/auth/login with an invalid body ({scenario})"):
         response = auth_client.post(path="/api/auth/login", json=payloads[scenario])
-
-    with allure.step("Verify the validation error names every offending field"):
         assert response.status_code == 400
         body = response.json()
         assert body["success"] is False
@@ -224,8 +218,6 @@ def test_admin_login_with_date_based_password(auth_client: AuthClient):
             path="/api/auth/login",
             json={"username": admin_user.username, "password": admin_user.password},
         )
-
-    with allure.step("Verify the admin identity and the token claims"):
         assert response.status_code == 200
         payload = response.json()
         assert payload["success"] is True
@@ -247,32 +239,19 @@ def test_login_unknown_user_matches_wrong_password_error(auth_client: AuthClient
     """Logging in with a username that does not exist returns exactly the same
     error as an existing account with a wrong password, so the response cannot
     be used to enumerate valid usernames."""
-    standard_user = get_standard_user()
-
-    with allure.step("Send POST /api/auth/login with a wrong password"):
-        wrong_password = auth_client.post(
-            path="/api/auth/login",
-            json={"username": standard_user.username, "password": "WrongPass_42!"},
-        )
-
     with allure.step("Send POST /api/auth/login with an unknown username"):
-        unknown_user = auth_client.post(
+        response = auth_client.post(
             path="/api/auth/login",
             json={"username": "no_such_user_xyz_42", "password": "Whatever_42!"},
         )
-
-    with allure.step("Verify both requests return the same invalid-credentials error"):
-        assert wrong_password.status_code == 401
-        assert unknown_user.status_code == 401
-        wrong_password_payload = wrong_password.json()
-        unknown_user_payload = unknown_user.json()
-        assert unknown_user_payload == wrong_password_payload
-        assert unknown_user_payload["success"] is False
-        assert unknown_user_payload["error"]["code"] == "INVALID_CREDENTIALS"
-        assert (
-            unknown_user_payload["error"]["message"] == "Invalid username or password"
-        )
-        assert "data" not in unknown_user_payload
+        assert response.status_code == 401
+        assert response.json() == {
+            "success": False,
+            "error": {
+                "code": "INVALID_CREDENTIALS",
+                "message": "Invalid username or password",
+            },
+        }
 
 
 @allure.id("LOGIN-008")
@@ -289,8 +268,6 @@ def test_login_with_malformed_json_is_rejected(auth_client: AuthClient):
             data='{"username": "standard_user", ',
             headers={"Content-Type": "application/json"},
         )
-
-    with allure.step("Verify the controlled error response"):
         assert response.status_code == 400
         payload = response.json()
         assert payload["success"] is False
