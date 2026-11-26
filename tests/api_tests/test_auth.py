@@ -7,7 +7,7 @@ import pytest
 
 from config.environments import get_admin_user, get_locked_user, get_standard_user
 from src.api import AuthClient
-from tests.api_tests.accounts import DisposableAccount
+from tests.api_tests.conftest import DisposableAccount
 
 ACCESS_TOKEN_TTL_SECONDS = 900
 

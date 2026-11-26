@@ -1,11 +1,24 @@
 import uuid
 from collections.abc import Generator
+from dataclasses import dataclass
 
 import pytest
 
 from config.environments import get_standard_user
 from src.api import ApiClient, AuthClient, ProductsClient, UserClient
-from tests.api_tests.accounts import DisposableAccount
+
+# Fixture-local values for throwaway signups, not environment credentials.
+DISPOSABLE_ACCOUNT_PASSWORD = "NewUser1!"
+DISPOSABLE_ACCOUNT_PHONE = "380501234567"
+
+
+@dataclass(frozen=True)
+class DisposableAccount:
+    """A throwaway standard account created for a test."""
+
+    username: str
+    email: str
+    password: str
 
 
 @pytest.fixture()
@@ -36,16 +49,15 @@ def auth_client() -> Generator[AuthClient]:
 def disposable_account(auth_client: AuthClient) -> DisposableAccount:
     """Create a disposable standard account through the signup endpoint."""
     email = f"qa.{uuid.uuid4().hex}@mailinator.com"
-    password = "NewUser1!"
-    response = auth_client.post(
-        "/api/auth/signup",
-        json={"email": email, "phone": "380501234567", "password": password},
+    user_client = auth_client.signup(
+        email=email,
+        phone=DISPOSABLE_ACCOUNT_PHONE,
+        password=DISPOSABLE_ACCOUNT_PASSWORD,
     )
-    user = response.json()["data"]["user"]
     return DisposableAccount(
-        username=user["username"],
-        email=user["email"],
-        password=password,
+        username=user_client.user_session.username,
+        email=email,
+        password=DISPOSABLE_ACCOUNT_PASSWORD,
     )
 
 
