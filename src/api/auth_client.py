@@ -30,3 +30,25 @@ class AuthClient(ApiClient):
             base_url=self.base_url,
             session=self.session,
         )
+
+    def signup(self, email: str, phone: str, password: str) -> UserClient:
+        """Create a standard account and return an authenticated API client."""
+        response = self.post(
+            "/api/auth/signup",
+            json={"email": email, "phone": phone, "password": password},
+        )
+
+        if response.status_code != 201:
+            raise AuthError(f"Signup failed: {response.status_code} {response.text}")
+
+        data = response.json()["data"]
+        user_session = UserSession(
+            user=data["user"],
+            access_token=data["accessToken"],
+        )
+
+        return UserClient(
+            user_session=user_session,
+            base_url=self.base_url,
+            session=self.session,
+        )
